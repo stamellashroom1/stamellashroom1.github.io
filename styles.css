@@ -2,6 +2,12 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
+.blue {
+    color: blue;
+}
+.noUnderline {
+    text-decoration: none;
+}
 nav ul {
     padding-left: 0px;
 }
@@ -18,18 +24,27 @@ header h1 {
     padding-top: 0.5em;
     font-size: 3em;
 }
-p {
-    margin: 1em;
+body {
     font-size: 20px;
 }
 nav li:hover {
     background-color: white;
 }
-nav ul {
-    font-size: 0;
-}
 nav ul li {
+    font-size: 0;
+    display: inline-block;
+}
+nav ul li a {
     font-size: 25px;
     padding: 0.5em;
     display: inline-block;
+}
+.leftMargin {
+    margin-left: 1em;
+}
+#scratch {
+    display: none;
+}
+#scratchInfo:hover #scratch {
+    display: block;
 }
