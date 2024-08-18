@@ -30,8 +30,10 @@ body {
 nav li:hover {
     background-color: white;
 }
-nav ul li {
+nav ul {
     font-size: 0;
+}
+nav ul li {
     display: inline-block;
 }
 nav ul li a {
@@ -47,4 +49,7 @@ nav ul li a {
 }
 #scratchInfo:hover #scratch {
     display: block;
+}
+.small {
+    font-size: 10px;
 }
