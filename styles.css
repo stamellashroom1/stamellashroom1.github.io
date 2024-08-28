@@ -56,3 +56,6 @@ nav ul li a {
 .small {
     font-size: 10px;
 }
+textarea {
+    resize: none;
+}
