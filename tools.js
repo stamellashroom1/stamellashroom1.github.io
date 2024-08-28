@@ -69,3 +69,20 @@
         }
     });
 })();
+
+// Differentiation
+(function () {
+    const submit = document.getElementById("diffSubmit");
+    const answer = document.getElementById("diffAnswer");
+    const copy = document.getElementById("copyDiff");
+    copy.style.display = "none";
+    answer.textContent = "";
+    answer.style.display = "none";
+    let solution;
+    copy.addEventListener("click", () => {
+        navigator.clipboard.writeText(solution);
+    });
+    submit.addEventListener("click", () => {
+        alert("This is not currently working!");
+    });
+})();

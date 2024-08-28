@@ -38,16 +38,19 @@
             </span>
             <br>
             <span>
-                <textarea id="calcAnswer" readonly="true"></textarea>
+                <textarea id="calcAnswer" readonly="true" rows="2"></textarea>
                 <button id="copyCalc">Copy</button>
             </span>
-
             <h4>Derivative Finder - Coming Soon!</h4>
             <span>
-                <input type="text">
-                <button>Derive</button>
+                <input type="text" id="diffInput" value="">
+                <button id="diffSubmit">Solve</button>
             </span>
-            <p id="diffAnswer"></p>
+            <br>
+            <span>
+                <textarea id="diffAnswer" readonly="true" rows="2"></textarea>
+                <button id="copyDiff">Copy</button>
+            </span>
         </div>
     </body>
     <script src="tools.js"></script>
