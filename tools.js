@@ -83,6 +83,23 @@
     });
 })();
 
+// Line of best fit
+(function () {
+    const submit = document.getElementById("lineSubmit");
+    const answer = document.getElementById("lineAnswer");
+    const copy = document.getElementById("copyline");
+    copy.style.display = "none";
+    answer.textContent = "";
+    answer.style.display = "none";
+    let solution;
+    copy.addEventListener("click", () => {
+        navigator.clipboard.writeText(solution);
+    });
+    submit.addEventListener("click", () => {
+        alert("This is not currently working!");
+    });
+})();
+
 // Differentiation
 (function () {
     const submit = document.getElementById("diffSubmit");
