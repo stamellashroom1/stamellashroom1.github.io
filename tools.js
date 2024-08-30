@@ -22,50 +22,63 @@
 
             let signs = input.match(/[-\+\*\/^]/g);
             // console.log(`signs ${signs}`);
+            if (signs !== null) { // test signs
+                let regex = /(\d+\.?\d*)/g;
+                numbers = input.match(regex);
+                // console.log(`numbers ${numbers}`);
+                if (numbers !== null) { // test numbers
+                    let signIndex;
+                    let signIndex1;
+                    let signIndex2;
+                    let completedOperation;
 
-            let regex = /(\d+\.?\d*)/g;
-            numbers = input.match(regex);
-            // console.log(`numbers ${numbers}`);
+                    // handle powers
+                    signIndex = 0;
+                    while (signs.includes("^")) {
+                        signIndex = signs.indexOf("^", signIndex);
+                        completedOperation = parseFloat(numbers[signIndex]) ** parseFloat(numbers[signIndex + 1]);
+                        numbers.splice(signIndex, 2, completedOperation);
+                        signs.splice(signIndex, 1);
+                    }
+                    // handle multiplication and division
+                    signIndex = 0;
+                    while (signs.includes("*") || signs.includes("/")) {
+                        signIndex1 = signs.indexOf("*") === -1 ? Infinity : signs.indexOf("*");
+                        signIndex2 = signs.indexOf("/") === -1 ? Infinity : signs.indexOf("/");
+                        signIndex = Math.min(signIndex1, signIndex2);
+                        completedOperation = signIndex === signIndex1
+                            ? parseFloat(numbers[signIndex]) * parseFloat(numbers[signIndex + 1])
+                            : parseFloat(numbers[signIndex]) / parseFloat(numbers[signIndex + 1]);
+                        numbers.splice(signIndex, 2, completedOperation);
+                        signs.splice(signIndex, 1);
+                    }
+                    // handle addition and subtraction
+                    signIndex = 0;
+                    while (signs.includes("+") || signs.includes("-")) {
+                        signIndex1 = signs.indexOf("+") === -1 ? Infinity : signs.indexOf("+");
+                        signIndex2 = signs.indexOf("-") === -1 ? Infinity : signs.indexOf("-");
+                        signIndex = Math.min(signIndex1, signIndex2);
+                        completedOperation = signIndex === signIndex1
+                            ? parseFloat(numbers[signIndex]) + parseFloat(numbers[signIndex + 1])
+                            : parseFloat(numbers[signIndex]) - parseFloat(numbers[signIndex + 1]);
+                        numbers.splice(signIndex, 2, completedOperation);
+                        signs.splice(signIndex, 1);
+                    }
+                    // console.log(`Answer is ${numbers}`);
 
-            let signIndex;
-            let signIndex1;
-            let signIndex2;
-            let completedOperation;
-
-            signIndex = 0;
-            while (signs.includes("^")) {
-                signIndex = signs.indexOf("^", signIndex);
-                completedOperation = parseFloat(numbers[signIndex]) ** parseFloat(numbers[signIndex + 1]);
-                numbers.splice(signIndex, 2, completedOperation);
-                signs.splice(signIndex, 1);
+                    // display changes after answer had been found
+                    answer.style.display = "inline-block";
+                    answer.textContent = "Answer is " + numbers;
+                    ANS.style.display = "inline-block";
+                    copy.style.display = "inline-block";
+                } else {
+                    alert("Please provide a valid input! (include numbers to be operated on)");
+                }
+            } else {
+                alert("Please provide a valid input! (include operators)");
             }
-            signIndex = 0;
-            while (signs.includes("*") || signs.includes("/")) {
-                signIndex1 = signs.indexOf("*") === -1 ? Infinity : signs.indexOf("*");
-                signIndex2 = signs.indexOf("/") === -1 ? Infinity : signs.indexOf("/");
-                signIndex = Math.min(signIndex1, signIndex2);
-                completedOperation = signIndex === signIndex1
-                    ? parseFloat(numbers[signIndex]) * parseFloat(numbers[signIndex + 1])
-                    : parseFloat(numbers[signIndex]) / parseFloat(numbers[signIndex + 1]);
-                numbers.splice(signIndex, 2, completedOperation);
-                signs.splice(signIndex, 1);
-            }
-            signIndex = 0;
-            while (signs.includes("+") || signs.includes("-")) {
-                signIndex1 = signs.indexOf("+") === -1 ? Infinity : signs.indexOf("+");
-                signIndex2 = signs.indexOf("-") === -1 ? Infinity : signs.indexOf("-");
-                signIndex = Math.min(signIndex1, signIndex2);
-                completedOperation = signIndex === signIndex1
-                    ? parseFloat(numbers[signIndex]) + parseFloat(numbers[signIndex + 1])
-                    : parseFloat(numbers[signIndex]) - parseFloat(numbers[signIndex + 1]);
-                numbers.splice(signIndex, 2, completedOperation);
-                signs.splice(signIndex, 1);
-            }
-            // console.log(`Answer is ${numbers}`);
-            answer.style.display = "inline-block";
-            answer.textContent = "Answer is " + numbers;
-            ANS.style.display = "inline-block";
-            copy.style.display = "inline-block";
+        } else {
+            alert("Please provide an input!");
         }
     });
 })();
