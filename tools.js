@@ -68,7 +68,7 @@
 
                     // display changes after answer had been found
                     answer.style.display = "inline-block";
-                    answer.textContent = "Answer is " + numbers;
+                    answer.textContent = "Answer: " + numbers;
                     ANS.style.display = "inline-block";
                     copy.style.display = "inline-block";
                 } else {
@@ -160,7 +160,7 @@
                     solution = "y = " + String(gradient) + "x + " + intercept;
                 }
                 answer.style.display = "inline-block";
-                answer.textContent = "Answer is " + solution;
+                answer.textContent = "Equation of the line of best fit: " + solution;
                 copy.style.display = "inline-block";
             } else {
                 alert("This data does not produce a valid line of best fit (gradient is infinity)");
