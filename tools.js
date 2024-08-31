@@ -91,12 +91,83 @@
     copy.style.display = "none";
     answer.textContent = "";
     answer.style.display = "none";
-    let solution;
+    let solution = "";
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);
     });
     submit.addEventListener("click", () => {
-        alert("This is not currently working!");
+        let input = String(document.getElementById("lineInput").value);
+        console.log(input);
+        if (input) {
+            let allValues = input.match(/\d+\.?\d*/g);
+            let xValues = [];
+            let yValues = [];
+            // separate x and y values
+            for (let i = 0; i < allValues.length; i++) {
+                if (i % 2 == 0) {
+                    xValues.push(allValues[i]);
+                } else {
+                    yValues.push(allValues[i]);
+                }
+            }
+
+            // x values
+            let xLowerMean = 0;
+            let xUpperMean = 0;
+            let xMean = 0;
+            for (let i = 0; i < Math.floor(xValues.length / 2); i++) {
+                xLowerMean += parseFloat(xValues[i]);
+            }
+            xLowerMean /= Math.floor(xValues.length / 2);
+            for (let i = Math.ceil(xValues.length / 2); i < xValues.length; i++) {
+                xUpperMean += parseFloat(xValues[i]);
+            }
+            xUpperMean /= Math.floor(xValues.length / 2);
+            for (let i = 0; i < xValues.length; i++) {
+                xMean += parseFloat(xValues[i]);
+            }
+            xMean /= xValues.length;
+
+            // y values
+            let yLowerMean = 0;
+            let yUpperMean = 0;
+            let yMean = 0;
+            for (let i = 0; i < Math.floor(yValues.length / 2); i++) {
+                yLowerMean += parseFloat(yValues[i]);
+            }
+            yLowerMean /= Math.floor(yValues.length / 2);
+            for (let i = Math.ceil(yValues.length / 2); i < yValues.length; i++) {
+                yUpperMean += parseFloat(yValues[i]);
+            }
+            yUpperMean /= Math.floor(yValues.length / 2);
+            for (let i = 0; i < yValues.length; i++) {
+                yMean += parseFloat(yValues[i]);
+            }
+            yMean /= yValues.length;
+
+            let gradient = (yUpperMean - yLowerMean) / (xUpperMean - xLowerMean);
+            if (gradient !== Infinity) {
+                let intercept = yMean - (xMean * gradient);
+                if (gradient == 1) {
+                    gradient = "";
+                }
+                solution = "";
+                if (Math.abs(intercept) !== intercept) {
+                    solution = "y = " + String(gradient) + "x - " + Math.abs(intercept);
+                } else if (intercept == 0) {
+                    solution = "y = " + String(gradient) + "x";
+                } else {
+                    solution = "y = " + String(gradient) + "x + " + intercept;
+                }
+                answer.style.display = "inline-block";
+                answer.textContent = "Answer is " + solution;
+                copy.style.display = "inline-block";
+            } else {
+                alert("This data does not produce a valid line of best fit (gradient is infinity)");
+            }
+        } else {
+            alert("Please provide an input!");
+        }
     });
 })();
 
