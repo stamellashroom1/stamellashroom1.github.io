@@ -28,7 +28,8 @@ header h1 {
     padding-bottom: 0.5em;
 }
 body {
-    font-size: 20px;
+    font-size: 30px;
+    padding-bottom: 20px;
 }
 nav li:hover {
     background-color: white;
@@ -40,28 +41,34 @@ nav ul li {
     display: inline-block;
 }
 nav ul li a {
-    font-size: 25px;
+    font-size: 35px;
     padding: 0.5em;
     display: inline-block;
 }
 .leftMargin {
     margin-left: 1em;
 }
-#scratch {
-    display: none;
-}
-#scratchInfo:hover #scratch {
-    display: block;
-}
 .small {
-    font-size: 10px;
+    font-size: 0.5em;
 }
 textarea {
     resize: none;
+    margin-bottom: 0px;
+    margin-top: 5px;
 }
 textarea, input {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    width: 200px;
+    width: 25%;
+    font-size: 20px;
+}
+.rightMargin {
+    margin-right: 1em;
+}
+sub {
+    font-size: 0.75em;
+}
+button {
+    font-size: 20px;
 }

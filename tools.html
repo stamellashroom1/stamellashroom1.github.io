@@ -22,7 +22,7 @@
         </nav>
     </header>
     <body>
-        <div class="leftMargin">
+        <div class="leftMargin rightMargin">
             <p>
                 Here are some tools I have made.
             </p>
@@ -31,37 +31,43 @@
             <p>
                 You can use this to solve basic operations. Only use the characters 0-9 and +, -, *, /, ., and ^. It will follow order of operations. Working on support for brackets.
             </p>
-            <span>
-                <input type="text" id="generalCalculatorInput" value="">
-                <button id="generalCalculatorSubmit">Solve</button>
-                <button id="calcANS">ANS</button>
-            </span>
-            <br>
-            <span>
-                <textarea id="calcAnswer" readonly="true" rows="3"></textarea>
-                <button id="copyCalc">Copy</button>
-            </span>
+            <div>
+                <span>
+                    <input type="text" id="generalCalculatorInput" value="">
+                    <button id="generalCalculatorSubmit">Solve</button>
+                    <button id="calcANS">ANS</button>
+                </span>
+                <br>
+                <span>
+                    <textarea id="calcAnswer" readonly="true" rows="3"></textarea>
+                    <button id="copyCalc">Copy</button>
+                </span>                
+            </div>
             <h4>Line of Best Fit</h4>
             <p>Input datapoints and this calculator will produce a linear line of best fit. Enter data in the format x<sub>1</sub>, y<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub> etc. Data needs to be ordered by x value.</p>
-            <span>
-                <input type="text" id="lineInput" value="">
-                <button id="lineSubmit">Solve</button>
-            </span>
-            <br>
-            <span>
-                <textarea id="lineAnswer" readonly="true" rows="2"></textarea>
-                <button id="copyline">Copy</button>
-            </span>
+            <div>
+                <span>
+                    <input type="text" id="lineInput" value="">
+                    <button id="lineSubmit">Solve</button>
+                </span>
+                <br>
+                <span>
+                    <textarea id="lineAnswer" readonly="true" rows="2"></textarea>
+                    <button id="copyline">Copy</button>
+                </span>
+            </div>
             <h4>Derivative Finder - Coming Soon!</h4>
-            <span>
-                <input type="text" id="diffInput" value="">
-                <button id="diffSubmit">Solve</button>
-            </span>
-            <br>
-            <span>
-                <textarea id="diffAnswer" readonly="true" rows="2"></textarea>
-                <button id="copyDiff">Copy</button>
-            </span>
+            <div>
+                <span>
+                    <input type="text" id="diffInput" value="">
+                    <button id="diffSubmit">Solve</button>
+                </span>
+                <br>
+                <span>
+                    <textarea id="diffAnswer" readonly="true" rows="2"></textarea>
+                    <button id="copyDiff">Copy</button>
+                </span>
+            </div>
         </div>
     </body>
     <script src="tools.js"></script>
