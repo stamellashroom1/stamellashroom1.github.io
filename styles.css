@@ -78,7 +78,7 @@ button, select {
     border-radius: 5px;
     background-color: #d3d3d3;
     border-color: #d3d3d3;
-    color: blacks;
+    color: black;
 }
 button:hover {
     background-color: #e0e0e0;
