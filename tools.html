@@ -10,6 +10,7 @@
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <header>
         <h1>Tools</h1>
@@ -44,6 +45,13 @@
             <h4>Line of Best Fit</h4>
             <p>Input datapoints and this calculator will produce a linear line of best fit. Enter data in the format x<sub>1</sub>, y<sub>1</sub>, x<sub>2</sub>, y<sub>2</sub> etc. Data needs to be ordered by x value.</p>
             <div>
+                <label for="lineSelect">What type of equation:</label>
+                <select name="lineSelect" id="lineType">
+                    <option value="1">Linear</option>
+                    <option value="2">Parabola</option>
+                    <option value="3">Cubic</option>
+                </select>
+                <br>
                 <span>
                     <input type="text" id="lineInput" value="">
                     <button id="lineSubmit">Solve</button>
