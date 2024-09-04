@@ -9,14 +9,22 @@
     answer.textContent = "";
     answer.style.display = "none";
     let numbers = [];
+    const docInput = document.getElementById("generalCalculatorInput");
     ANS.addEventListener("click", () => {
-        document.getElementById("generalCalculatorInput").value = document.getElementById("generalCalculatorInput").value + numbers[0];
+        document.getElementById("generalCalculatorInput").value = docInput.value + numbers[0];
     });
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(numbers[0]);
     });
     submit.addEventListener("click", () => {
-        let input = String(document.getElementById("generalCalculatorInput").value);
+        solveCalc();
+    });
+    docInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter")
+            solveCalc();
+    });
+    function solveCalc() {
+        let input = String(docInput.value);
         if (input) {
             // console.log(input);
 
@@ -80,7 +88,7 @@
         } else {
             alert("Please provide an input!");
         }
-    });
+    }
 })();
 
 // Line of best fit
@@ -92,11 +100,20 @@
     answer.textContent = "";
     answer.style.display = "none";
     let solution = "";
+    const docInput = document.getElementById("lineInput");
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);
     });
     submit.addEventListener("click", () => {
-        let input = String(document.getElementById("lineInput").value);
+        solveLine();
+    });
+    docInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            solveLine();
+        }
+    });
+    function solveLine() {
+        let input = String(docInput.value);
         console.log(input);
         if (input) {
             let allValues = input.match(/\d+\.?\d*/g);
@@ -168,7 +185,7 @@
         } else {
             alert("Please provide an input!");
         }
-    });
+    }
 })();
 
 // Differentiation
@@ -180,10 +197,19 @@
     answer.textContent = "";
     answer.style.display = "none";
     let solution;
+    const docInput = document.getElementById("diffInput");
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);
     });
     submit.addEventListener("click", () => {
-        alert("This is not currently working!");
+        solveDiff();
     });
+    docInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            solveDiff();
+        }
+    });
+    function solveDiff() {
+        alert("This is not currently working!");
+    }
 })();
