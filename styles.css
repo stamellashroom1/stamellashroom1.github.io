@@ -77,7 +77,12 @@ textarea, input {
     color: black;
 }
 sub {
-    font-size: 6px;
+    font-size: 8px;
+}
+button {
+    width: 12%;
+    text-align: center;
+    padding: 0;
 }
 button, select {
     font-size: 16px;
@@ -88,7 +93,6 @@ button, select {
     border-color: #d3d3d3;
     color: black;
     min-width: 50px;
-    text-align: center;
 }
 button:hover {
     background-color: #e0e0e0;
@@ -112,9 +116,6 @@ p {
 }
 input {
     width: 60%;
-}
-button {
-    width: 12%;
 }
 textarea {
     width: 60%;
