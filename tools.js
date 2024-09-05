@@ -113,6 +113,11 @@
         }
     });
     function solveLine() {
+        let type = parseInt(document.getElementById("lineType").value);
+        if (type !== 1) {
+            alert("Sorry, this is not working yet.");
+            return;
+        }
         let input = String(docInput.value);
         console.log(input);
         if (input) {
