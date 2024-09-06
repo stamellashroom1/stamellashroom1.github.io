@@ -11,7 +11,7 @@ html, body {
     font-family: "Roboto", sans-serif;
 }
 body {
-    padding-bottom: 5em;
+    padding-bottom: 3em;
 }
 .noUnderline {
     text-decoration: none;
@@ -37,7 +37,6 @@ nav li a:hover {
 }
 nav li {
     display: inline-block;
-    width: calc((100% / 3));
 }
 header {
     text-align: center;
@@ -75,8 +74,9 @@ textarea, input {
     font-family: inherit;
     border-radius: 5px;
     color: black;
-    margin-right: 1%;
+    margin-right: 2px;
     min-width: 150px;
+    max-width: 500px;
     vertical-align: middle;
 }
 label {
@@ -92,10 +92,11 @@ sub {
 }
 button {
     width: 12%;
+    max-width: 100px;
     text-align: center;
     padding: 0;
-    margin-left: 1%;
-    margin-right: 1%;
+    margin-left: 2px;
+    margin-right: 2px;
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -163,4 +164,67 @@ textarea {
         margin-top: 5px;
         margin-right: 200px;
     }
+}
+@media all and (max-width: 400px) {
+    nav li {
+        width: calc((100% / 3));
+    }
+}
+@media all and (max-width: 500px) and (min-width: 401px) {
+    nav li {
+        width: 100px;
+    }
+    header h1 {
+        font-size: 50px;
+    }
+    nav li a {
+        font-size: 20px;
+    }
+}
+@media all and (min-width: 501px) {
+    nav li {
+        width: 100px;
+    }
+    header h1 {
+        font-size: 70px;
+    }
+    nav li a {
+        font-size: 25px;
+    }
+    textarea, input {
+        border-width: 1px;
+    }
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modalContent {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+#closeModal {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+#closeModal:hover,
+#closeModal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }

@@ -119,7 +119,7 @@
             return;
         }
         let input = String(docInput.value);
-        console.log(input);
+        // console.log(input);
         if (input) {
             let allValues = input.match(/\d+\.?\d*/g);
             let xValues = [];
@@ -189,6 +189,44 @@
             }
         } else {
             alert("Please provide an input!");
+        }
+    }
+})();
+
+// Mean
+(function () {
+    const submit = document.getElementById("meanSubmit");
+    const answer = document.getElementById("meanAnswer");
+    const copy = document.getElementById("copyMean");
+    copy.style.display = "none";
+    answer.textContent = "";
+    answer.style.display = "none";
+    let solution;
+    const docInput = document.getElementById("meanInput");
+    copy.addEventListener("click", () => {
+        navigator.clipboard.writeText(solution);
+    });
+    submit.addEventListener("click", () => {
+        solveMean();
+    });
+    docInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            solveMean();
+        }
+    });
+    function solveMean() {
+        let input = String(docInput.value);
+        if (input) {
+            let allValues = input.match(/\d+\.?\d*/g);
+            let mean = 0;
+            for (let i = 0; i < allValues.length; i++) {
+                mean += parseFloat(allValues[i]);
+            }
+            mean /= allValues.length;
+            solution = mean;
+            answer.style.display = "inline-block";
+            answer.textContent = "Mean: " + solution;
+            copy.style.display = "inline-block";
         }
     }
 })();

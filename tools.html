@@ -64,6 +64,19 @@
                     <button id="copyline">Copy</button>
                 </span>
             </div>
+            <h4>Mean Calculator</h4>
+            <p>Enter values in a comma-separated format and the calculator will find the mean.</p>
+            <div class="noWhitespace">
+                <span>
+                    <input type="text" id="meanInput" value="">
+                    <button id="meanSubmit">Solve</button>
+                </span>
+                <br>
+                <span>
+                    <textarea id="meanAnswer" readonly="true"></textarea>
+                    <button id="copyMean">Copy</button>
+                </span>
+            </div>
             <h4>Derivative Finder - Coming Soon!</h4>
             <p>Enter an expression and the calculator will find its first derivation.</p>
             <div class="noWhitespace">
@@ -76,6 +89,12 @@
                     <textarea id="diffAnswer" readonly="true"></textarea>
                     <button id="copyDiff">Copy</button>
                 </span>
+            </div>
+        </div>
+        <div id="testModal" class="modal">
+            <div class="modalContent">
+                <span id="closeModal">&times;</span>
+                <p></p>
             </div>
         </div>
     </body>
