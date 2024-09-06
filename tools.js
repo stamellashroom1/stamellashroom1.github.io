@@ -34,7 +34,7 @@
                 let regex = /(\d+\.?\d*)/g;
                 numbers = input.match(regex);
                 // console.log(`numbers ${numbers}`);
-                if (numbers !== null) { // test numbers
+                if (numbers !== null && numbers.length !== 1) { // test numbers
                     let signIndex;
                     let signIndex1;
                     let signIndex2;
@@ -80,13 +80,13 @@
                     ANS.style.display = "inline-block";
                     copy.style.display = "inline-block";
                 } else {
-                    alert("Please provide a valid input! (include numbers to be operated on)");
+                    openModal("Please provide a valid input! (include multiple numbers to be operated on)");
                 }
             } else {
-                alert("Please provide a valid input! (include operators)");
+                openModal("Please provide a valid input! (include operators)");
             }
         } else {
-            alert("Please provide an input!");
+            openModal("Please provide an input!");
         }
     }
 })();
@@ -115,7 +115,7 @@
     function solveLine() {
         let type = parseInt(document.getElementById("lineType").value);
         if (type !== 1) {
-            alert("Sorry, this is not working yet.");
+            openModal("Sorry, this is not working yet.");
             return;
         }
         let input = String(docInput.value);
@@ -185,10 +185,10 @@
                 answer.textContent = "Equation of the line of best fit: " + solution;
                 copy.style.display = "inline-block";
             } else {
-                alert("This data does not produce a valid line of best fit (gradient is infinity)");
+                openModal("This data does not produce a valid line of best fit (gradient is infinity)");
             }
         } else {
-            alert("Please provide an input!");
+            openModal("Please provide an input!");
         }
     }
 })();
@@ -227,6 +227,8 @@
             answer.style.display = "inline-block";
             answer.textContent = "Mean: " + solution;
             copy.style.display = "inline-block";
+        } else {
+            openModal("Please provide an input!");
         }
     }
 })();
@@ -253,6 +255,23 @@
         }
     });
     function solveDiff() {
-        alert("This is not currently working!");
+        openModal("This is not currently working!");
     }
 })();
+
+// Modal
+const modal = document.getElementById("testModal");
+const close = document.getElementById("closeModal");
+const text = document.getElementById("modalText");
+function openModal(content) {
+    text.textContent = String(content);
+    modal.style.display = "block";
+}
+close.addEventListener("click", () => {
+    modal.style.display = "none";
+});
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}

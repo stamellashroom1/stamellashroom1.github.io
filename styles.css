@@ -201,7 +201,7 @@ textarea {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 100px;
+    padding-top: 30vh;
     left: 0;
     top: 0;
     width: 100%;
@@ -214,17 +214,24 @@ textarea {
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 30%;
+    min-width: 100px;
 }
 #closeModal {
     color: #aaaaaa;
     float: right;
-    font-size: 28px;
+    font-size: 38px;
     font-weight: bold;
-  }
+    line-height: 24px;
+}
 #closeModal:hover,
 #closeModal:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+#modalText {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
 }
