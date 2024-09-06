@@ -132,60 +132,63 @@
                     yValues.push(allValues[i]);
                 }
             }
-
-            // x values
-            let xLowerMean = 0;
-            let xUpperMean = 0;
-            let xMean = 0;
-            for (let i = 0; i < Math.floor(xValues.length / 2); i++) {
-                xLowerMean += parseFloat(xValues[i]);
-            }
-            xLowerMean /= Math.floor(xValues.length / 2);
-            for (let i = Math.ceil(xValues.length / 2); i < xValues.length; i++) {
-                xUpperMean += parseFloat(xValues[i]);
-            }
-            xUpperMean /= Math.floor(xValues.length / 2);
-            for (let i = 0; i < xValues.length; i++) {
-                xMean += parseFloat(xValues[i]);
-            }
-            xMean /= xValues.length;
-
-            // y values
-            let yLowerMean = 0;
-            let yUpperMean = 0;
-            let yMean = 0;
-            for (let i = 0; i < Math.floor(yValues.length / 2); i++) {
-                yLowerMean += parseFloat(yValues[i]);
-            }
-            yLowerMean /= Math.floor(yValues.length / 2);
-            for (let i = Math.ceil(yValues.length / 2); i < yValues.length; i++) {
-                yUpperMean += parseFloat(yValues[i]);
-            }
-            yUpperMean /= Math.floor(yValues.length / 2);
-            for (let i = 0; i < yValues.length; i++) {
-                yMean += parseFloat(yValues[i]);
-            }
-            yMean /= yValues.length;
-
-            let gradient = (yUpperMean - yLowerMean) / (xUpperMean - xLowerMean);
-            if (gradient !== Infinity) {
-                let intercept = yMean - (xMean * gradient);
-                if (gradient == 1) {
-                    gradient = "";
+            if (xValues.length > 1 && yValues.length > 1) {
+                // x values
+                let xLowerMean = 0;
+                let xUpperMean = 0;
+                let xMean = 0;
+                for (let i = 0; i < Math.floor(xValues.length / 2); i++) {
+                    xLowerMean += parseFloat(xValues[i]);
                 }
-                solution = "";
-                if (Math.abs(intercept) !== intercept) {
-                    solution = "y = " + String(gradient) + "x - " + Math.abs(intercept);
-                } else if (intercept == 0) {
-                    solution = "y = " + String(gradient) + "x";
+                xLowerMean /= Math.floor(xValues.length / 2);
+                for (let i = Math.ceil(xValues.length / 2); i < xValues.length; i++) {
+                    xUpperMean += parseFloat(xValues[i]);
+                }
+                xUpperMean /= Math.floor(xValues.length / 2);
+                for (let i = 0; i < xValues.length; i++) {
+                    xMean += parseFloat(xValues[i]);
+                }
+                xMean /= xValues.length;
+
+                // y values
+                let yLowerMean = 0;
+                let yUpperMean = 0;
+                let yMean = 0;
+                for (let i = 0; i < Math.floor(yValues.length / 2); i++) {
+                    yLowerMean += parseFloat(yValues[i]);
+                }
+                yLowerMean /= Math.floor(yValues.length / 2);
+                for (let i = Math.ceil(yValues.length / 2); i < yValues.length; i++) {
+                    yUpperMean += parseFloat(yValues[i]);
+                }
+                yUpperMean /= Math.floor(yValues.length / 2);
+                for (let i = 0; i < yValues.length; i++) {
+                    yMean += parseFloat(yValues[i]);
+                }
+                yMean /= yValues.length;
+
+                let gradient = (yUpperMean - yLowerMean) / (xUpperMean - xLowerMean);
+                if (gradient !== Infinity) {
+                    let intercept = yMean - (xMean * gradient);
+                    if (gradient == 1) {
+                        gradient = "";
+                    }
+                    solution = "";
+                    if (Math.abs(intercept) !== intercept) {
+                        solution = "y = " + String(gradient) + "x - " + Math.abs(intercept);
+                    } else if (intercept == 0) {
+                        solution = "y = " + String(gradient) + "x";
+                    } else {
+                        solution = "y = " + String(gradient) + "x + " + intercept;
+                    }
+                    answer.style.display = "inline-block";
+                    answer.textContent = "Equation of the line of best fit: " + solution;
+                    copy.style.display = "inline-block";
                 } else {
-                    solution = "y = " + String(gradient) + "x + " + intercept;
+                    openModal("This data does not produce a valid line of best fit (gradient is infinity)");
                 }
-                answer.style.display = "inline-block";
-                answer.textContent = "Equation of the line of best fit: " + solution;
-                copy.style.display = "inline-block";
             } else {
-                openModal("This data does not produce a valid line of best fit (gradient is infinity)");
+                openModal("Please provide at least two datapoints!");
             }
         } else {
             openModal("Please provide an input!");
@@ -218,15 +221,19 @@
         let input = String(docInput.value);
         if (input) {
             let allValues = input.match(/\d+\.?\d*/g);
-            let mean = 0;
-            for (let i = 0; i < allValues.length; i++) {
-                mean += parseFloat(allValues[i]);
+            if (allValues !== null && allValues.length !== 1) {
+                let mean = 0;
+                for (let i = 0; i < allValues.length; i++) {
+                    mean += parseFloat(allValues[i]);
+                }
+                mean /= allValues.length;
+                solution = mean;
+                answer.style.display = "inline-block";
+                answer.textContent = "Mean: " + solution;
+                copy.style.display = "inline-block";                
+            } else {
+                openModal("Please provide a valid input! (two or more numbers)");
             }
-            mean /= allValues.length;
-            solution = mean;
-            answer.style.display = "inline-block";
-            answer.textContent = "Mean: " + solution;
-            copy.style.display = "inline-block";
         } else {
             openModal("Please provide an input!");
         }
