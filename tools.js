@@ -133,6 +133,21 @@
                 }
             }
             if (xValues.length > 1 && yValues.length > 1) {
+                // sort
+                let xSorted = [...xValues].sort((a, b) => a - b);
+                let ySorted = [];
+                let usedIndices = new Set();
+                for (let i = 0; i < xSorted.length; i++) { 
+                    let indexInOriginal = xValues.indexOf(xSorted[i]);
+                    while (usedIndices.has(indexInOriginal)) {
+                        indexInOriginal = xValues.indexOf(xSorted[i], indexInOriginal + 1);
+                    }
+                    ySorted.push(yValues[indexInOriginal]);
+                    usedIndices.add(indexInOriginal);
+                }
+                xValues = [...xSorted];
+                yValues = [...ySorted];
+
                 // x values
                 let xLowerMean = 0;
                 let xUpperMean = 0;
@@ -233,6 +248,50 @@
                 copy.style.display = "inline-block";                
             } else {
                 openModal("Please provide a valid input! (two or more numbers)");
+            }
+        } else {
+            openModal("Please provide an input!");
+        }
+    }
+})();
+
+// Median
+(function () {
+    const submit = document.getElementById("medianSubmit");
+    const answer = document.getElementById("medianAnswer");
+    const copy = document.getElementById("copyMedian");
+    copy.style.display = "none";
+    answer.textContent = "";
+    answer.style.display = "none";
+    let solution;
+    const docInput = document.getElementById("medianInput");
+    copy.addEventListener("click", () => {
+        navigator.clipboard.writeText(solution);
+    });
+    submit.addEventListener("click", () => {
+        solveMedian();
+    });
+    docInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            solveMedian();
+        }
+    });
+    function solveMedian() {
+        let input = String(docInput.value);
+        if (input) {
+            let allValues = input.match(/\d+\.?\d*/g);
+            if (allValues !== null && allValues.length > 1) {
+                allValues.sort((a, b) => a - b);
+                if (allValues.length % 2 == 0) {
+                    solution = (parseFloat(allValues[(allValues.length / 2) - 1]) + parseFloat(allValues[allValues.length / 2])) / 2;
+                } else {
+                    solution = allValues[Math.floor(allValues.length / 2)];
+                }
+                answer.style.display = "inline-block";
+                answer.textContent = "Median: " + solution;
+                copy.style.display = "inline-block";
+            } else {
+                openModal("Please provide a valid input (at least two numbers)");
             }
         } else {
             openModal("Please provide an input!");
