@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirecting</title>
+</head>
+<body>
+    <h1>Just a minute...</h1>
+    <span>
+        <p id="text" style="display: inline-block;">No ID supplied.</p>
+        <button id="cancel" style="display: none;">Click to cancel</button>
+    </span>
+    <script>
+        const text = document.getElementById("text");
+        const cancel = document.getElementById("cancel");
+        let proceed = 1;
+
+        cancel.addEventListener("click", () => {
+            proceed = 0;
+            text.textContent = "Redirect canceled.";
+            cancel.style.display = "none";
+        });
+
+        const currentURL = new URL(window.location.href);
+        const params = new URLSearchParams(currentURL.search);
+        const id = params.get('id');
+        const URLS = {
+            1: "https://google.com",
+            2: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        };
+
+        if (id && URLS[id]) {
+            let seconds = 10;
+            let initialSeconds = 10;
+            if (id == 2) {
+                seconds = 2;
+                initialSeconds = 2;
+            }
+            text.textContent = `Redirecting you to ${URLS[id]} in ${seconds} seconds...`;
+            setInterval(function() {
+                if (seconds > 0 && proceed === 1) {
+                    seconds--;
+                    text.textContent = `Redirecting you to ${URLS[id]} in ${seconds} seconds...`;
+                }
+            }, 1000);
+            cancel.style.display = "inline-block";
+            setTimeout(function() {
+                if (proceed === 1) {
+                    window.location.href = URLS[id];
+                }
+            }, (1000 * initialSeconds));
+        } else {
+            text.textContent = "Invalid ID.";
+        }
+    </script>
+</body>
+</html>
