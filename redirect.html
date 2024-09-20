@@ -1,55 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Redirecting</title>
+    <title id="title">Redirecting...</title>
 </head>
 <body>
     <h1>Just a minute...</h1>
     <span>
-        <p id="text" style="display: inline-block;">No ID supplied.</p>
+        <p id="text" style="display: inline-block;"></p>
         <button id="cancel" style="display: none;">Click to cancel</button>
     </span>
     <script>
         const text = document.getElementById("text");
         const cancel = document.getElementById("cancel");
+        const title = document.getElementById("title");
         let proceed = 1;
 
         cancel.addEventListener("click", () => {
             proceed = 0;
             text.textContent = "Redirect canceled.";
             cancel.style.display = "none";
+            title.textContent = "Redirect Canceled";
         });
 
         const currentURL = new URL(window.location.href);
-        const params = new URLSearchParams(currentURL.search);
-        const id = params.get('id');
-        const URLS = {
+        const parameters = new URLSearchParams(currentURL.search);
+        const id = parameters.get('id');
+        const URLs = {
             1: "https://google.com",
             2: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         };
+        const customTime = parameters.get("t");
 
-        if (id && URLS[id]) {
+        if (id && URLs[id]) {
             let seconds = 10;
             let initialSeconds = 10;
             if (id == 2) {
-                seconds = 2;
-                initialSeconds = 2;
+                seconds = 1;
+                initialSeconds = 1;
             }
-            text.textContent = `Redirecting you to ${URLS[id]} in ${seconds} seconds...`;
+            if (customTime) {
+                seconds = parseFloat(customTime);
+                initialSeconds = parseFloat(customTime);
+            }
+            text.textContent = `Redirecting you to "${URLs[id]}" in ${seconds} seconds...`;
             setInterval(function() {
                 if (seconds > 0 && proceed === 1) {
                     seconds--;
-                    text.textContent = `Redirecting you to ${URLS[id]} in ${seconds} seconds...`;
+                    text.textContent = `Redirecting you to "${URLs[id]}" in ${seconds} seconds...`;
                 }
             }, 1000);
             cancel.style.display = "inline-block";
             setTimeout(function() {
                 if (proceed === 1) {
-                    window.location.href = URLS[id];
+                    window.location.href = URLs[id];
                 }
             }, (1000 * initialSeconds));
-        } else {
+        } else if (id) {
             text.textContent = "Invalid ID.";
+            title.textContent = "Invalid ID";
+        } else {
+            text.innerHTML = 'Please use an ID, e.g. <a style="color:#006699" href="./redirect.html?id=1">https://stamellashroom1.github.io/redirect.html?id=1</a>.<br/>You can request new URLs to redirect to at <a style="color:#006699" href="mailto:stamellashroom1@gmail.com">stamellashroom1@gmail.com</a>.';
+            title.textContent = "No ID";
         }
     </script>
 </body>
