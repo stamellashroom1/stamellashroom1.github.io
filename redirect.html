@@ -2,13 +2,16 @@
 <html>
 <head>
     <title id="title">Redirecting...</title>
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <h1>Just a minute...</h1>
-    <span>
-        <p id="text" style="display: inline-block;"></p>
-        <button id="cancel" style="display: none;">Click to cancel</button>
-    </span>
+    <div class="leftMargin">
+        <h1>Just a minute...</h1>
+        <span>
+            <p id="text" style="display: inline-block;"></p>
+            <button id="cancel" class="wideButton" style="display: none; min-width: 120px;">Click to cancel</button>
+        </span>        
+    </div>
     <script>
         const text = document.getElementById("text");
         const cancel = document.getElementById("cancel");
