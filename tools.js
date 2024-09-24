@@ -300,40 +300,176 @@
 })();
 
 // Differentiation
+const docInput = document.getElementById("diffInput");
+const diffAnswer = document.getElementById("diffAnswer");
+const diffCopy = document.getElementById("copyDiff");
+let diffSolution;
 (function () {
     const submit = document.getElementById("diffSubmit");
-    const answer = document.getElementById("diffAnswer");
-    const copy = document.getElementById("copyDiff");
-    copy.style.display = "none";
-    answer.textContent = "";
-    answer.style.display = "none";
-    let solution;
-    const docInput = document.getElementById("diffInput");
-    copy.addEventListener("click", () => {
-        navigator.clipboard.writeText(solution);
+    diffCopy.style.display = "none";
+    diffAnswer.textContent = "";
+    diffAnswer.style.display = "none";
+    diffCopy.addEventListener("click", () => {
+        navigator.clipboard.writeText(diffSolution);
     });
     submit.addEventListener("click", () => {
-        solveDiff();
+        openConfirm("This feature is experimental!", "Ok", "Cancel", "diff");
     });
     docInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
-            solveDiff();
+            openConfirm("This feature is experimental!", "Ok", "Cancel", "diff");
         }
     });
-    function solveDiff() {
-        openModal("This is not currently working!");
-    }
 })();
+function solveDiff() {
+    diffSolution = "";
+    // openModal("This is not currently working!");
+    let input = String(docInput.value);
+    if (input) {
+        if (input.includes("x")) {
+            input = input.replace("--", "+");
+            if (input.substring(0, 1) === "+") {
+                input = input.substring(1);
+            }
+
+            console.log("start testing");
+            console.log(input);
+            if (input === "4x-1") {
+                console.log("all good");
+            }
+            let allValues = input.match(/\d*\.?\d*x|\d+\.?\d*/g);
+            console.log(allValues);
+            if (allValues[0] == "0") {
+                allValues.shift();
+                console.log("shifted");
+            }
+            console.log(allValues);
+            console.log(allValues[0]);
+            let allValuesCopy = [...allValues];
+            console.log(allValuesCopy);
+            let signs = input.match(/[-\+\*\/^]/g);
+            if (signs !== null && signs[0] === "-") {
+                allValues.unshift("0");
+            }
+            allValues = [...allValuesCopy];
+            console.log(allValues);
+            console.log("end testing");
+
+            console.log(signs);
+            if (allValues !== null) {
+                if (signs == null) {
+                    diffSolution = diff(allValues[0]);
+                    diffSolution = cleanInput(diffSolution);
+                    diffAnswer.style.display = "inline-block";
+                    diffAnswer.textContent = "f'(x) = " + diffSolution;
+                    diffCopy.style.display = "inline-block";
+                } else {
+                    let outputTerms = [];
+                    for (let i = 0; i < allValues.length; i++) {
+                        if (signs[i] === "^") {
+                            let pushToDiff = String(allValues[i]) + "^" + String(allValues[i + 1]);
+                            outputTerms.push(diff(pushToDiff));
+                            console.log(outputTerms);
+                            signs.splice(i);
+                            i++;
+                        } else {
+                            outputTerms.push(diff(allValues[i]));
+                            console.log(allValues[i]);
+                            console.log(outputTerms);
+                        }
+                    }
+                    for (let i = 0; i < outputTerms.length; i++) {
+                        diffSolution += outputTerms[i];
+                        if (i < signs.length) {
+                            diffSolution += signs[i];
+                        }
+                    }
+                    diffSolution = cleanInput(diffSolution);
+                    diffAnswer.style.display = "inline-block";
+                    diffAnswer.textContent = "f'(x) = " + diffSolution;
+                    diffCopy.style.display = "inline-block";
+                }
+            } else {
+                openModal("Please provide a valid input!");
+            }            
+        } else {
+            diffAnswer.style.display = "inline-block";
+            diffAnswer.textContent = "f'(x) = 0";
+            diffCopy.style.display = "inline-block";
+        }
+    } else {
+        openModal("Please provide an input!");
+    }
+}
+function diff(term) {
+    console.log(term);
+    let returnTerm;
+    if (term.includes("x")) {
+        if (term === "x") {
+            return 1;
+        } else {
+            if (term.includes("^")) {
+                let diffTest = term.match(/\^/g);
+                if (diffTest.length === 1) {
+                    let diffTerm = term.match(/-?\d+\.?\d*/g);
+                    if (diffTerm.length === 2) {
+                        returnTerm = (parseFloat(diffTerm[0]) * parseFloat(diffTerm[1])) === 1 ? "" : parseFloat(diffTerm[0]) * parseFloat(diffTerm[1]);
+                        if (parseFloat(diffTerm[1]) === 1) {
+                            return returnTerm;
+                        } else {
+                            returnTerm = String(parseFloat(diffTerm[1]) - 1) === "1" ? returnTerm + "x" : returnTerm + "x^" + String(parseFloat(diffTerm[1]) - 1);
+                            // returnTerm = returnTerm + "x" + "^" + String(parseFloat(diffTerm[1]) - 1);
+                            return returnTerm;
+                        }
+                    } else {
+                        if (term === String(diffTerm[0]) + "x^") {
+                            return "error - incorrect format";
+                        } else {
+                            if (parseFloat(diffTerm[0]) - 1 === 0) {
+                                returnTerm = diffTerm[0];
+                                return returnTerm;
+                            } else {
+                                returnTerm = String(parseFloat(diffTerm[0]) - 1) === "1" ? diffTerm[0] + "x" : diffTerm[0] + "x^" + String(parseFloat(diffTerm[0]) - 1);
+                                return returnTerm;
+                            }
+                        }
+                    }
+                } else {
+                    return "error - too many exponents";
+                }
+            } else {
+                returnTerm = term.match(/-?\d+\.?\d*/g);
+                if (returnTerm.length === 1) {
+                    return returnTerm[0];                    
+                } else {
+                    return "error - no exponent but two numbers";
+                }
+            }
+        }
+    } else {
+        returnTerm = 0;
+        return returnTerm;
+    }
+}
+function cleanInput(input) {
+    if (input.length > 1) {
+        if (input.substring(0, 2) === "0-") {
+            input = input.substring(1)
+        }
+        input = input.replace("--", "+");
+    }
+    return input;
+}
 
 // Modal
 const modal = document.getElementById("testModal");
-const close = document.getElementById("closeModal");
-const text = document.getElementById("modalText");
+const modalClose = document.getElementById("closeModal");
+const modalText = document.getElementById("modalText");
 function openModal(content) {
-    text.textContent = String(content);
+    modalText.textContent = String(content);
     modal.style.display = "block";
 }
-close.addEventListener("click", () => {
+modalClose.addEventListener("click", () => {
     modal.style.display = "none";
 });
 window.onclick = function(event) {
@@ -341,3 +477,64 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+// Confirm
+const confirmObj = document.getElementById("testConfirm");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
+const confirmText = document.getElementById("confirmText");
+const confirmCheckbox = document.getElementById("confirmRepeatCheck");
+let dontShowAgain = [];
+let allContent = "";
+let confirmResult = "";
+let trigger = "";
+function openConfirm(content, yes, no, triggerIfTrue) {
+    if (!yes && !no) {
+        console.log("error - not enough parameters. try openModal(text).")
+        return;
+    }
+    let test = 1;
+    allContent = content + yes + no + triggerIfTrue;
+    for (let i = 0; i < dontShowAgain.length; i++) {
+        if (dontShowAgain[i] === allContent) {
+            test = 0;
+            break;
+        }
+    }
+    if (test === 1) {
+        trigger = triggerIfTrue;
+        confirmText.textContent = String(content);
+        if (yes) {
+            confirmYes.textContent = String(yes);
+        } else {
+            confirmYes.style.display = "none";
+        }
+        if (no) {
+            confirmNo.textContent = String(no);
+        } else {
+            confirmNo.style.display = "none";
+        }
+        confirmObj.style.display = "block";
+    } else {
+        if (triggerIfTrue === "diff") {
+            solveDiff();
+        }
+    }
+}
+confirmYes.addEventListener("click", () => {
+    if (confirmCheckbox.checked === true) {
+        dontShowAgain.push(allContent);
+    }
+    confirmObj.style.display = "none";
+    if (trigger === "diff") {
+        solveDiff();
+    } else {
+        console.log("trigger not found");
+    }
+});
+confirmNo.addEventListener("click", () => {
+    confirmObj.style.display = "none";
+});
+document.getElementById("checkLabel").addEventListener("click", () => {
+    confirmCheckbox.checked = !confirmCheckbox.checked;
+});

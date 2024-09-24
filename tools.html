@@ -32,7 +32,7 @@
             </p>
             <div class="noWhitespace">
                 <span>
-                    <input type="text" id="generalCalculatorInput" value="">
+                    <input type="text" id="generalCalculatorInput" class="input" value="">
                     <button id="generalCalculatorSubmit">Solve</button>
                     <button id="calcANS">ANS</button>
                 </span>
@@ -55,7 +55,7 @@
                 </div>
                 <br>
                 <span>
-                    <input type="text" id="lineInput" value="">
+                    <input type="text" id="lineInput" class="input" value="">
                     <button id="lineSubmit">Solve</button>
                 </span>
                 <br>
@@ -68,7 +68,7 @@
             <p>Enter values in a comma-separated format and the calculator will find the mean.</p>
             <div class="noWhitespace">
                 <span>
-                    <input type="text" id="meanInput" value="">
+                    <input type="text" id="meanInput" class="input" value="">
                     <button id="meanSubmit">Solve</button>
                 </span>
                 <br>
@@ -81,7 +81,7 @@
             <p>Enter values in a comma-separated format and the calculator will find the median.</p>
             <div class="noWhitespace">
                 <span>
-                    <input type="text" id="medianInput" value="">
+                    <input type="text" id="medianInput" class="input" value="">
                     <button id="medianSubmit">Solve</button>
                 </span>
                 <br>
@@ -90,11 +90,11 @@
                     <button id="copyMedian">Copy</button>
                 </span>
             </div>
-            <h4>Derivative Finder - Coming Soon!</h4>
-            <p>Enter an expression and the calculator will find its first derivation.</p>
+            <h4>Derivative Finder - Experimental</h4>
+            <p>Enter an expression and the calculator will find its first derivation. Brackets are not currently working. Basically, this is a fairly simple derivative finder so don't expect too much from it.</p>
             <div class="noWhitespace">
                 <span>
-                    <input type="text" id="diffInput" value="">
+                    <input type="text" id="diffInput" class="input" value="">
                     <button id="diffSubmit">Solve</button>
                 </span>
                 <br>
@@ -110,6 +110,24 @@
                 <p id="modalText"></p>
             </div>
         </div>
+        <div id="testConfirm" class="confirm">
+            <div class="confirmContent">
+                <p id="confirmText">This feature is experimental!</p>
+                <br/>
+                <span>
+                    <label for="checkbox" id="checkLabel">Don't show me again</label>
+                    <input id="confirmRepeatCheck" type="checkbox" value="checkbox">
+                </span>
+                <br/>
+                <button id="confirmYes" class="confirmButton">Ok</button>
+                <button id="confirmNo" class="confirmButton">Cancel</button>
+            </div>
+        </div>
     </body>
     <script src="tools.js"></script>
+    <script>
+        (function() {
+            document.getElementById("confirmRepeatCheck").checked = false;
+        })();
+    </script>
 </html>
