@@ -361,7 +361,8 @@ function solveDiff() {
                     diffSolution = diff(allValues[0]);
                     diffSolution = cleanInput(diffSolution);
                     diffAnswer.style.display = "inline-block";
-                    diffAnswer.textContent = "f'(x) = " + diffSolution;
+                    diffSolution = "f'(x) = " + diffSolution;
+                    diffAnswer.textContent = diffSolution;
                     diffCopy.style.display = "inline-block";
                 } else {
                     let outputTerms = [];
@@ -385,16 +386,18 @@ function solveDiff() {
                         }
                     }
                     diffSolution = cleanInput(diffSolution);
+                    diffSolution = "f'(x) = " + diffSolution;
                     diffAnswer.style.display = "inline-block";
-                    diffAnswer.textContent = "f'(x) = " + diffSolution;
+                    diffAnswer.textContent = diffSolution;
                     diffCopy.style.display = "inline-block";
                 }
             } else {
                 openModal("Please provide a valid input!");
             }            
         } else {
+            diffSolution = "f'(x) = 0";
             diffAnswer.style.display = "inline-block";
-            diffAnswer.textContent = "f'(x) = 0";
+            diffAnswer.textContent = diffSolution;
             diffCopy.style.display = "inline-block";
         }
     } else {
