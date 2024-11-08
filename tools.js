@@ -317,11 +317,13 @@ let diffSolution;
         navigator.clipboard.writeText(diffSolution);
     });
     submit.addEventListener("click", () => {
-        openConfirm("This feature is experimental!", "Ok", "Cancel", "diff");
+        // openConfirm("This feature is experimental!", "Ok", "Cancel", "diff");
+        solveDiff();
     });
     docInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
-            openConfirm("This feature is experimental!", "Ok", "Cancel", "diff");
+            // openConfirm("This feature is experimental!", "Ok", "Cancel", "diff");
+            solveDiff();
         }
     });
 })();
