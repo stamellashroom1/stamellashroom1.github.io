@@ -26,12 +26,16 @@
     function solveCalc() {
         let input = String(docInput.value);
         if (input) {
+            if (input[0] === "-") {
+                input = "0" + input;
+            }
+            input = input.replaceAll(/(?<=\d)-/g, "+-"); // matching \d before -, then replacing the - with "+-"
             // console.log(input);
 
-            let signs = input.match(/[-\+\*\/^]/g);
+            let signs = input.match(/[\+\*\/^]/g);
             // console.log(`signs ${signs}`);
             if (signs !== null) { // test signs
-                let regex = /(\d+\.?\d*)/g;
+                let regex = /-?\d+\.?\d*/g;
                 numbers = input.match(regex);
                 // console.log(`numbers ${numbers}`);
                 if (numbers !== null && numbers.length !== 1) { // test numbers
@@ -327,34 +331,20 @@ function solveDiff() {
     let input = String(docInput.value);
     if (input) {
         if (input.includes("x")) {
-            input = input.replace("--", "+");
-            if (input.substring(0, 1) === "+") {
+            input = input.replaceAll("--", "+");
+            if (input[0] === "+") {
                 input = input.substring(1);
             }
+            input = input.replaceAll(/(?<!\d)x/g, "1x");
 
-            console.log("start testing");
+            simplify(input);
+            let allValues = input.match(/-?\d*\.?\d*x\^-?\d*\.?\d*|-?\d*\.?\d+x|-?\d*\.?\d*\^-?\d+\.?\d*|-?\d+\.?\d*/g);
+            // +-number x ^ +-number | +-number x | +-number ^ +-number | +-number
+
             console.log(input);
-            if (input === "4x-1") {
-                console.log("all good");
-            }
-            let allValues = input.match(/\d*\.?\d*x|\d+\.?\d*/g);
             console.log(allValues);
-            if (allValues[0] == "0") {
-                allValues.shift();
-                console.log("shifted");
-            }
-            console.log(allValues);
-            console.log(allValues[0]);
-            let allValuesCopy = [...allValues];
-            console.log(allValuesCopy);
-            let signs = input.match(/[-\+\*\/^]/g);
-            if (signs !== null && signs[0] === "-") {
-                allValues.unshift("0");
-            }
-            allValues = [...allValuesCopy];
-            console.log(allValues);
-            console.log("end testing");
 
+            let signs = input.match(/\+/g);
             console.log(signs);
             if (allValues !== null) {
                 if (signs == null) {
@@ -367,23 +357,12 @@ function solveDiff() {
                 } else {
                     let outputTerms = [];
                     for (let i = 0; i < allValues.length; i++) {
-                        if (signs[i] === "^") {
-                            let pushToDiff = String(allValues[i]) + "^" + String(allValues[i + 1]);
-                            outputTerms.push(diff(pushToDiff));
-                            console.log(outputTerms);
-                            signs.splice(i);
-                            i++;
-                        } else {
-                            outputTerms.push(diff(allValues[i]));
-                            console.log(allValues[i]);
-                            console.log(outputTerms);
-                        }
+                        outputTerms.push(diff(allValues[i]));
                     }
-                    for (let i = 0; i < outputTerms.length; i++) {
+                    diffSolution = outputTerms[0];
+                    for (let i = 1; i < outputTerms.length; i++) {
+                        diffSolution += "+";
                         diffSolution += outputTerms[i];
-                        if (i < signs.length) {
-                            diffSolution += signs[i];
-                        }
                     }
                     diffSolution = cleanInput(diffSolution);
                     diffSolution = "f'(x) = " + diffSolution;
@@ -405,7 +384,7 @@ function solveDiff() {
     }
 }
 function diff(term) {
-    console.log(term);
+    // console.log(term);
     let returnTerm;
     if (term.includes("x")) {
         if (term === "x") {
@@ -459,9 +438,83 @@ function cleanInput(input) {
         if (input.substring(0, 2) === "0-") {
             input = input.substring(1)
         }
-        input = input.replace("--", "+");
+        input = input.replace(/\-\-/g, "+");
+        input = input.replace(/(?<=\d)x\^0/g, "");
+        input = input.replace(/x\^0/g, "1");
+        input = input.replace(/x\^1/g, "x");
+        input = input.replace(/\+\-/g, "-");
     }
     return input;
+}
+function simplify(input) {
+    // sort out multiplication and division
+    let signs = input.match(/[+\/\*]/g);
+    let terms = input.match(/-?\d*\.?\d*x\^-?\d*\.?\d*|-?\d*\.?\d+x|-?\d*\.?\d*\^-?\d+\.?\d*|-?\d+\.?\d*/g);
+
+    for (let i = 0; i < terms.length; i++) {
+        if (terms[i].includes("^") && !terms[i].includes("x")) {
+            let num1 = parseFloat(terms[i].match(/-?\d+\.?\d*/g)[0]);
+            let num2 = parseFloat(terms[i].match(/-?\d+\.?\d*/g)[1]);
+            terms[i] = String(num1 ** num2);
+        }
+    }
+
+    if (!signs) {
+        return terms.join("");
+    }
+    let i = 0;
+    while (i < signs.length) {
+        if (signs[i] === "*" || signs[i] === "/") {
+            let num1 = parseFloat(terms[i].match(/(?<!x\^)-?\d+.?\d*/)[0]);
+            let num2 = parseFloat(terms[i + 1].match(/(?<!x\^)-?\d+.?\d*/)[0]);
+            let exp1 = terms[i].match(/(?<=\^)-?\d+\.?\d*/);
+            let exp2 = terms[i + 1].match(/(?<=\^)-?\d+\.?\d*/);
+            exp1 = exp1 ? parseFloat(exp1[0]) : (terms[i].includes('x') ? 1 : 0);
+            exp2 = exp2 ? parseFloat(exp2[0]) : (terms[i + 1].includes('x') ? 1 : 0);
+            let num3 = signs[i] === "*" ? num1 * num2 : num1 / num2;
+            let exp3 = signs[i] === "*" ? exp1 + exp2 : exp1 - exp2;
+
+            if (num3 === 0) {
+                terms.splice(i, 2);
+            } else if (exp3 === 0) {
+                terms.splice(i, 2, String(num3));
+            } else  {
+                terms.splice(i, 2, String(num3) + "x^" + String(exp3));
+            }
+            signs.splice(i, 1);
+        } else {
+            i++;
+        }
+    }
+
+    let hash = {};
+    let hash2 = [];
+    for (let i = 0; i < terms.length; i++) {
+        let pro = terms[i].match(/x\^-?\d+.?\d*/);
+        pro = pro ? pro[0] : (terms[i].includes("x") ? "x^1" : "x^0");
+        let co = parseFloat(terms[i].match(/(?!x\^)-?\d+\.?\d*/)[0]);
+        if (Object.hasOwn(hash, pro)) {
+            hash[pro].push(co);
+        } else {
+            hash[pro] = [co];
+            hash2.push(pro);
+        }
+    }
+
+    let sums = [];
+    for (let i = 0; i < hash2.length; i++) {
+        let runningSum = 0;
+        for (let j = 0; j < hash[hash2[i]].length; j++) {
+            runningSum += hash[hash2[i]][j];
+        }
+        sums.push(String(runningSum) + hash2[i]);
+    }
+    let final = sums[0];
+    for (let i = 1; i < sums.length; i++) {
+        final += "+";
+        final += sums[i];
+    }
+    return final;
 }
 
 // Modal
@@ -487,7 +540,6 @@ const confirmYes = document.getElementById("confirmYes");
 const confirmNo = document.getElementById("confirmNo");
 const confirmText = document.getElementById("confirmText");
 const confirmCheckbox = document.getElementById("confirmRepeatCheck");
-let dontShowAgain = [];
 let allContent = "";
 let confirmResult = "";
 let trigger = "";
@@ -498,22 +550,24 @@ function openConfirm(content, yes, no, triggerIfTrue) {
     }
     let test = 1;
     allContent = content + yes + no + triggerIfTrue;
-    for (let i = 0; i < dontShowAgain.length; i++) {
-        if (dontShowAgain[i] === allContent) {
+    let cookies = document.cookie;
+    cookies = cookies.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+        let cookiePair = cookies[i].split("=");
+        if (cookiePair[0].trim() === allContent) {
             test = 0;
-            break;
         }
     }
     if (test === 1) {
         trigger = triggerIfTrue;
-        confirmText.textContent = String(content);
+        confirmText.textContent = content;
         if (yes) {
-            confirmYes.textContent = String(yes);
+            confirmYes.textContent = yes;
         } else {
             confirmYes.style.display = "none";
         }
         if (no) {
-            confirmNo.textContent = String(no);
+            confirmNo.textContent = no;
         } else {
             confirmNo.style.display = "none";
         }
@@ -521,12 +575,14 @@ function openConfirm(content, yes, no, triggerIfTrue) {
     } else {
         if (triggerIfTrue === "diff") {
             solveDiff();
+        } else {
+            console.log("trigger not found");
         }
     }
 }
 confirmYes.addEventListener("click", () => {
     if (confirmCheckbox.checked === true) {
-        dontShowAgain.push(allContent);
+        setCookie(allContent, "true", "365");
     }
     confirmObj.style.display = "none";
     if (trigger === "diff") {
@@ -541,3 +597,13 @@ confirmNo.addEventListener("click", () => {
 document.getElementById("checkLabel").addEventListener("click", () => {
     confirmCheckbox.checked = !confirmCheckbox.checked;
 });
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = ";expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+    console.log(name + "=" + value + expires + "; path=/");
+}
