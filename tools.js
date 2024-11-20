@@ -17,80 +17,147 @@
         navigator.clipboard.writeText(numbers[0]);
     });
     submit.addEventListener("click", () => {
-        solveCalc();
+        let ans = solveCalc(docInput.value);
+        // display changes after answer had been found
+        answer.style.display = "inline-block";
+        answer.textContent = "Answer: " + ans;
+        ANS.style.display = "inline-block";
+        copy.style.display = "inline-block";
     });
     docInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter")
-            solveCalc();
+        if (event.key === "Enter") {
+            let ans = solveCalc(docInput.value);
+            // display changes after answer had been found
+            answer.style.display = "inline-block";
+            answer.textContent = "Answer: " + ans;
+            ANS.style.display = "inline-block";
+            copy.style.display = "inline-block";
+        }
     });
-    function solveCalc() {
-        let input = String(docInput.value);
+    function solveCalc(str) {
+        let input = String(str);
+
+        input = input.replaceAll("{", "("); // clean code so brackets are the same
+        input = input.replaceAll("[", "(");
+        input = input.replaceAll("}", ")");
+        input = input.replaceAll("]", ")");
+        
         if (input) {
             if (input[0] === "-") {
                 input = "0" + input;
             }
+
             input = input.replaceAll(/(?<=\d)-/g, "+-"); // matching \d before -, then replacing the - with "+-"
-            // console.log(input);
-
-            let signs = input.match(/[\+\*\/^]/g);
-            // console.log(`signs ${signs}`);
-            if (signs !== null) { // test signs
-                let regex = /-?\d+\.?\d*/g;
-                numbers = input.match(regex);
-                // console.log(`numbers ${numbers}`);
-                if (numbers !== null && numbers.length !== 1) { // test numbers
-                    let signIndex;
-                    let signIndex1;
-                    let signIndex2;
-                    let completedOperation;
-
-                    // handle powers
-                    signIndex = 0;
-                    while (signs.includes("^")) {
-                        signIndex = signs.indexOf("^", signIndex);
-                        completedOperation = parseFloat(numbers[signIndex]) ** parseFloat(numbers[signIndex + 1]);
-                        numbers.splice(signIndex, 2, completedOperation);
-                        signs.splice(signIndex, 1);
-                    }
-                    // handle multiplication and division
-                    signIndex = 0;
-                    while (signs.includes("*") || signs.includes("/")) {
-                        signIndex1 = signs.indexOf("*") === -1 ? Infinity : signs.indexOf("*");
-                        signIndex2 = signs.indexOf("/") === -1 ? Infinity : signs.indexOf("/");
-                        signIndex = Math.min(signIndex1, signIndex2);
-                        completedOperation = signIndex === signIndex1
-                            ? parseFloat(numbers[signIndex]) * parseFloat(numbers[signIndex + 1])
-                            : parseFloat(numbers[signIndex]) / parseFloat(numbers[signIndex + 1]);
-                        numbers.splice(signIndex, 2, completedOperation);
-                        signs.splice(signIndex, 1);
-                    }
-                    // handle addition and subtraction
-                    signIndex = 0;
-                    while (signs.includes("+") || signs.includes("-")) {
-                        signIndex1 = signs.indexOf("+") === -1 ? Infinity : signs.indexOf("+");
-                        signIndex2 = signs.indexOf("-") === -1 ? Infinity : signs.indexOf("-");
-                        signIndex = Math.min(signIndex1, signIndex2);
-                        completedOperation = signIndex === signIndex1
-                            ? parseFloat(numbers[signIndex]) + parseFloat(numbers[signIndex + 1])
-                            : parseFloat(numbers[signIndex]) - parseFloat(numbers[signIndex + 1]);
-                        numbers.splice(signIndex, 2, completedOperation);
-                        signs.splice(signIndex, 1);
-                    }
-                    // console.log(`Answer is ${numbers}`);
-
-                    // display changes after answer had been found
-                    answer.style.display = "inline-block";
-                    answer.textContent = "Answer: " + numbers;
-                    ANS.style.display = "inline-block";
-                    copy.style.display = "inline-block";
-                } else {
-                    openModal("Please provide a valid input! (include multiple numbers to be operated on)");
-                }
+            input = input.replaceAll(/(?<=\d)\(/g, "*("); // insert * if there is a digit then immediately a (
+            input = input.replaceAll(/(?=\d)\)/g, ")*"); // same as above but for end of brackets
+            input = input.replaceAll(")(", ")*(");
+            
+            let signs = [];
+            let numbers = [];
+            if (!input.includes("(")) {
+                numbers = input.match(/-?\d+\.?\d*/g);
+                signs = input.match(/[\+\*\/\*]/g);
             } else {
-                openModal("Please provide a valid input! (include operators)");
+                numbers = [];
+                let current = "";
+                let brackets = 0;
+                for (let i = 0; i < input.length; i++) {
+                    if (brackets > 0) {
+                        current += input[i];
+                        if (input[i] === ")") {
+                            brackets--;
+                        }
+                        if (input[i] === "(") {
+                            brackets++;
+                        }
+                    } else if (brackets === 0) {
+                        if (input[i] === "+" || input[i] === "*" || input[i] === "/") {
+                            signs.push(input[i]);
+                            numbers.push(current);
+                            current = "";
+                        } else {
+                            if (input[i] === "(") {
+                                brackets++;
+                            }
+                            current += input[i];
+                        }
+                    } else {
+                        openModal("Input error: wrong number of opening + closing brackets");
+                    }
+                }
+                if (current !== "") {
+                    numbers.push(current);
+                    current = "";
+                }
+                if (brackets !== 0) {
+                    openModal("Input error: wrong number of opening + closing brackets");
+                }
+            }
+
+            if (signs === null) {
+                if (!input.includes("(") && !input.includes(")")) {
+                    return input;
+                } else if (input[0] === "(" && input[input.length - 1] === ")") {
+                    return input.slice(1, input.length - 1);
+                } else {
+                    openModal("Input error: brackets not in right position");
+                }
+            }
+
+            for (let i = 0; i < numbers.length; i++) {
+                if (numbers[i].includes("(")) {
+                    if (numbers[i][0] === "(" && numbers[i][numbers[i].length - 1] === ")") {
+                        numbers[i] = solveCalc(numbers[i].slice(1, numbers[i].length - 1));
+                    } else {
+                        numbers[i] = solveCalc(numbers[i]);
+                    }
+                }
+            }
+
+            if (numbers !== null && numbers.length !== 1) { // test numbers
+                let signIndex;
+                let signIndex1;
+                let signIndex2;
+                let completedOperation;
+
+                // handle powers
+                signIndex = 0;
+                while (signs.includes("^")) {
+                    signIndex = signs.indexOf("^", signIndex);
+                    completedOperation = parseFloat(numbers[signIndex]) ** parseFloat(numbers[signIndex + 1]);
+                    numbers.splice(signIndex, 2, completedOperation);
+                    signs.splice(signIndex, 1);
+                }
+                // handle multiplication and division
+                signIndex = 0;
+                while (signs.includes("*") || signs.includes("/")) {
+                    signIndex1 = signs.indexOf("*") === -1 ? Infinity : signs.indexOf("*");
+                    signIndex2 = signs.indexOf("/") === -1 ? Infinity : signs.indexOf("/");
+                    signIndex = Math.min(signIndex1, signIndex2);
+                    completedOperation = signIndex === signIndex1
+                        ? parseFloat(numbers[signIndex]) * parseFloat(numbers[signIndex + 1])
+                        : parseFloat(numbers[signIndex]) / parseFloat(numbers[signIndex + 1]);
+                    numbers.splice(signIndex, 2, completedOperation);
+                    signs.splice(signIndex, 1);
+                }
+                // handle addition and subtraction
+                signIndex = 0;
+                while (signs.includes("+") || signs.includes("-")) {
+                    signIndex1 = signs.indexOf("+") === -1 ? Infinity : signs.indexOf("+");
+                    signIndex2 = signs.indexOf("-") === -1 ? Infinity : signs.indexOf("-");
+                    signIndex = Math.min(signIndex1, signIndex2);
+                    completedOperation = signIndex === signIndex1
+                        ? parseFloat(numbers[signIndex]) + parseFloat(numbers[signIndex + 1])
+                        : parseFloat(numbers[signIndex]) - parseFloat(numbers[signIndex + 1]);
+                    numbers.splice(signIndex, 2, completedOperation);
+                    signs.splice(signIndex, 1);
+                }
+                return numbers[0];
+            } else {
+                openModal("Input error: no operands");
             }
         } else {
-            openModal("Please provide an input!");
+            openModal("Input error: no valid input");
         }
     }
 })();
@@ -123,7 +190,6 @@
             return;
         }
         let input = String(docInput.value);
-        // console.log(input);
         if (input) {
             let allValues = input.match(/\d+\.?\d*/g);
             let xValues = [];
@@ -343,11 +409,7 @@ function solveDiff() {
             let allValues = input.match(/-?\d*\.?\d*x\^-?\d*\.?\d*|-?\d*\.?\d+x|-?\d*\.?\d*\^-?\d+\.?\d*|-?\d+\.?\d*/g);
             // +-number x ^ +-number | +-number x | +-number ^ +-number | +-number
 
-            console.log(input);
-            console.log(allValues);
-
             let signs = input.match(/\+/g);
-            console.log(signs);
             if (allValues !== null) {
                 if (signs == null) {
                     diffSolution = diff(allValues[0]);
@@ -386,7 +448,6 @@ function solveDiff() {
     }
 }
 function diff(term) {
-    // console.log(term);
     let returnTerm;
     if (term.includes("x")) {
         if (term === "x") {
@@ -607,5 +668,5 @@ function setCookie(name, value, days) {
         expires = ";expires=" + date.toUTCString();
     }
     document.cookie = name + "=" + value + expires + "; path=/";
-    console.log(name + "=" + value + expires + "; path=/");
+    // console.log(name + "=" + value + expires + "; path=/");
 }
