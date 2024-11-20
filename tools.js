@@ -17,17 +17,15 @@
         navigator.clipboard.writeText(numbers[0]);
     });
     submit.addEventListener("click", () => {
-        let ans = solveCalc(docInput.value);
-        // display changes after answer had been found
-        answer.style.display = "inline-block";
+        let ans = solveCalc(docInput.value); // call function, recursive
+        answer.style.display = "inline-block"; // display changes after answer had been found
         answer.textContent = "Answer: " + ans;
         ANS.style.display = "inline-block";
         copy.style.display = "inline-block";
     });
     docInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
-            let ans = solveCalc(docInput.value);
-            // display changes after answer had been found
+            let ans = solveCalc(docInput.value); // same as above
             answer.style.display = "inline-block";
             answer.textContent = "Answer: " + ans;
             ANS.style.display = "inline-block";
@@ -43,6 +41,7 @@
         input = input.replaceAll("]", ")");
         
         if (input) {
+
             if (input[0] === "-") {
                 input = "0" + input;
             }
@@ -52,69 +51,56 @@
             input = input.replaceAll(/(?=\d)\)/g, ")*"); // same as above but for end of brackets
             input = input.replaceAll(")(", ")*(");
             
-            let signs = [];
+            let signs = []; // this block: fill signs and numbers, splits around brackets
             let numbers = [];
-            if (!input.includes("(")) {
-                numbers = input.match(/-?\d+\.?\d*/g);
-                signs = input.match(/[\+\*\/\*]/g);
-            } else {
-                numbers = [];
-                let current = "";
-                let brackets = 0;
-                for (let i = 0; i < input.length; i++) {
-                    if (brackets > 0) {
-                        current += input[i];
-                        if (input[i] === ")") {
-                            brackets--;
-                        }
-                        if (input[i] === "(") {
-                            brackets++;
-                        }
-                    } else if (brackets === 0) {
-                        if (input[i] === "+" || input[i] === "*" || input[i] === "/") {
-                            signs.push(input[i]);
-                            numbers.push(current);
-                            current = "";
-                        } else {
-                            if (input[i] === "(") {
-                                brackets++;
-                            }
-                            current += input[i];
-                        }
+            let current = "";
+            let brackets = 0;
+            for (let i = 0; i < input.length; i++) {
+                if (brackets > 0) { // if the current part is still in a bracket
+                    current += input[i];
+
+                } else if (brackets === 0) {
+                    if (input[i] === "+" || input[i] === "*" || input[i] === "/" || input[i] === "^") { // check if the term has ended, hence needs to be pushed
+                        signs.push(input[i]); // make sure to update signs
+                        numbers.push(current);
+                        current = "";
+
                     } else {
-                        openModal("Input error: wrong number of opening + closing brackets");
+                        current += input[i]; // otherwise add to current
                     }
+                } else {
+                    openModal("Input error: wrong number of opening + closing brackets (1)"); // error check
                 }
-                if (current !== "") {
-                    numbers.push(current);
-                    current = "";
-                }
-                if (brackets !== 0) {
-                    openModal("Input error: wrong number of opening + closing brackets");
+
+                if (input[i] === ")") { // update brackets
+                    brackets--;
+                } else if (input[i] === "(") {
+                    brackets++;
                 }
             }
+            numbers.push(current);
 
-            if (signs === null) {
-                if (!input.includes("(") && !input.includes(")")) {
-                    return input;
-                } else if (input[0] === "(" && input[input.length - 1] === ")") {
+            if (brackets !== 0) { // error check
+                openModal(`Input error: wrong number of opening + closing brackets (2) - ${input}, ${numbers}, ${current}`);
+            }
+
+            if (signs === null) { // essentially if there is only one number
+                if (input.includes("(")) {
                     return input.slice(1, input.length - 1);
                 } else {
-                    openModal("Input error: brackets not in right position");
+                    return input;
                 }
             }
 
             for (let i = 0; i < numbers.length; i++) {
                 if (numbers[i].includes("(")) {
-                    if (numbers[i][0] === "(" && numbers[i][numbers[i].length - 1] === ")") {
-                        numbers[i] = solveCalc(numbers[i].slice(1, numbers[i].length - 1));
-                    } else {
-                        numbers[i] = solveCalc(numbers[i]);
-                    }
+                    // console.log(numbers[i]);
+                    numbers[i] = solveCalc(numbers[i].slice(1, numbers[i].length - 1)); // recursion
+                    // console.log(numbers[i]);
                 }
             }
 
-            if (numbers !== null && numbers.length !== 1) { // test numbers
+            if (numbers !== null) { // test numbers
                 let signIndex;
                 let signIndex1;
                 let signIndex2;
@@ -125,39 +111,49 @@
                 while (signs.includes("^")) {
                     signIndex = signs.indexOf("^", signIndex);
                     completedOperation = parseFloat(numbers[signIndex]) ** parseFloat(numbers[signIndex + 1]);
-                    numbers.splice(signIndex, 2, completedOperation);
+
+                    numbers.splice(signIndex, 2, String(completedOperation)); // edit arrays
                     signs.splice(signIndex, 1);
                 }
+
                 // handle multiplication and division
                 signIndex = 0;
                 while (signs.includes("*") || signs.includes("/")) {
                     signIndex1 = signs.indexOf("*") === -1 ? Infinity : signs.indexOf("*");
                     signIndex2 = signs.indexOf("/") === -1 ? Infinity : signs.indexOf("/");
-                    signIndex = Math.min(signIndex1, signIndex2);
+                    signIndex = Math.min(signIndex1, signIndex2); // do whatever ones first
+
                     completedOperation = signIndex === signIndex1
                         ? parseFloat(numbers[signIndex]) * parseFloat(numbers[signIndex + 1])
                         : parseFloat(numbers[signIndex]) / parseFloat(numbers[signIndex + 1]);
-                    numbers.splice(signIndex, 2, completedOperation);
+
+                    numbers.splice(signIndex, 2, String(completedOperation));
                     signs.splice(signIndex, 1);
                 }
+
                 // handle addition and subtraction
                 signIndex = 0;
                 while (signs.includes("+") || signs.includes("-")) {
                     signIndex1 = signs.indexOf("+") === -1 ? Infinity : signs.indexOf("+");
                     signIndex2 = signs.indexOf("-") === -1 ? Infinity : signs.indexOf("-");
                     signIndex = Math.min(signIndex1, signIndex2);
+
                     completedOperation = signIndex === signIndex1
                         ? parseFloat(numbers[signIndex]) + parseFloat(numbers[signIndex + 1])
                         : parseFloat(numbers[signIndex]) - parseFloat(numbers[signIndex + 1]);
-                    numbers.splice(signIndex, 2, completedOperation);
+
+                    numbers.splice(signIndex, 2, String(completedOperation));
                     signs.splice(signIndex, 1);
                 }
                 return numbers[0];
+
             } else {
                 openModal("Input error: no operands");
+                return "";
             }
         } else {
             openModal("Input error: no valid input");
+            return "";
         }
     }
 })();
