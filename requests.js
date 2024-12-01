@@ -8,7 +8,7 @@ dateButton.addEventListener('click', async () => {
             throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        printDate.textContent = `${data.message} at ${data.timestamp.toLocaleDateString('en-US',
+        printDate.textContent = `${data.message} at ${data.timestamp.toLocaleDateString('en-AU',
             {
                 weekday: 'long',
                 year: 'numeric',
