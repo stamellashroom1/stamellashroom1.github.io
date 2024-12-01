@@ -8,7 +8,8 @@ dateButton.addEventListener('click', async () => {
             throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        printDate.textContent = `${data.message} at ${data.timestamp.toDateString()}`;
+        const date = new Date(data.timestamp);
+        printDate.textContent = `${data.message} at ${date.toDateString()}`;
     } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
     }
