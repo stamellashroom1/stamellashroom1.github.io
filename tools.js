@@ -1,7 +1,7 @@
 // General Calculator
 (function () {
     const submit = document.getElementById("generalCalculatorSubmit");
-    const answer = document.getElementById("calcAnswer");
+    const answer = document.getElementById("ans-1");
     const copy = document.getElementById("copyCalc");
     const ANS = document.getElementById("calcANS");
     copy.style.display = "none";
@@ -9,27 +9,33 @@
     answer.textContent = "";
     answer.style.display = "none";
     let numbers = [];
-    const docInput = document.getElementById("generalCalculatorInput");
+    const docInput = document.getElementById("input-1");
     ANS.addEventListener("click", () => {
-        document.getElementById("generalCalculatorInput").value = docInput.value + numbers[0];
+        document.getElementById("input-1").value = docInput.value + numbers[0];
     });
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(numbers[0]);
     });
     submit.addEventListener("click", () => {
         let ans = solveCalc(docInput.value); // call function, recursive
-        answer.style.display = "inline-block"; // display changes after answer had been found
-        answer.textContent = "Answer: " + ans;
-        ANS.style.display = "inline-block";
-        copy.style.display = "inline-block";
+        if (ans !== "err") {
+            answer.style.display = "inline-block"; // display changes after answer had been found
+            answer.textContent = "Answer: " + ans;
+            ANS.style.display = "inline-block";
+            copy.style.display = "inline-block";
+            document.getElementById("mem-1").style.display = "inline-block";
+        }
     });
     docInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
             let ans = solveCalc(docInput.value); // same as above
-            answer.style.display = "inline-block";
-            answer.textContent = "Answer: " + ans;
-            ANS.style.display = "inline-block";
-            copy.style.display = "inline-block";
+            if (ans !== "err") {
+                answer.style.display = "inline-block";
+                answer.textContent = "Answer: " + ans;
+                ANS.style.display = "inline-block";
+                copy.style.display = "inline-block";
+                document.getElementById("mem-1").style.display = "inline-block";
+            }
         }
     });
     function solveCalc(str) {
@@ -70,6 +76,7 @@
                     }
                 } else {
                     openModal("Input error: wrong number of opening + closing brackets (1)"); // error check
+                    return "err";
                 }
 
                 if (input[i] === ")") { // update brackets
@@ -82,6 +89,7 @@
 
             if (brackets !== 0) { // error check
                 openModal(`Input error: wrong number of opening + closing brackets (2) - ${input}, ${numbers}, ${current}`);
+                return "err";
             }
 
             if (signs === null) { // essentially if there is only one number
@@ -149,11 +157,11 @@
 
             } else {
                 openModal("Input error: no operands");
-                return "";
+                return "err";
             }
         } else {
             openModal("Input error: no valid input");
-            return "";
+            return "err";
         }
     }
 })();
@@ -161,13 +169,13 @@
 // Line of best fit
 (function () {
     const submit = document.getElementById("lineSubmit");
-    const answer = document.getElementById("lineAnswer");
+    const answer = document.getElementById("ans-2");
     const copy = document.getElementById("copyline");
     copy.style.display = "none";
     answer.textContent = "";
     answer.style.display = "none";
     let solution = "";
-    const docInput = document.getElementById("lineInput");
+    const docInput = document.getElementById("input-2");
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);
     });
@@ -183,7 +191,7 @@
         let type = parseInt(document.getElementById("lineType").value);
         if (type !== 1) {
             openModal("Sorry, this is not working yet.");
-            return;
+            return "err";
         }
         let input = String(docInput.value);
         if (input) {
@@ -265,6 +273,7 @@
                     answer.style.display = "inline-block";
                     answer.textContent = "Equation of the line of best fit: " + solution;
                     copy.style.display = "inline-block";
+                    document.getElementById("mem-2").style.display = "inline-block";
                 } else {
                     openModal("This data does not produce a valid line of best fit (gradient is infinity)");
                 }
@@ -280,13 +289,13 @@
 // Mean
 (function () {
     const submit = document.getElementById("meanSubmit");
-    const answer = document.getElementById("meanAnswer");
+    const answer = document.getElementById("ans-3");
     const copy = document.getElementById("copyMean");
     copy.style.display = "none";
     answer.textContent = "";
     answer.style.display = "none";
     let solution;
-    const docInput = document.getElementById("meanInput");
+    const docInput = document.getElementById("input-3");
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);
     });
@@ -311,7 +320,8 @@
                 solution = mean;
                 answer.style.display = "inline-block";
                 answer.textContent = "Mean: " + solution;
-                copy.style.display = "inline-block";                
+                copy.style.display = "inline-block";
+                document.getElementById("mem-3").style.display = "inline-block";
             } else {
                 openModal("Please provide a valid input! (two or more numbers)");
             }
@@ -324,13 +334,13 @@
 // Median
 (function () {
     const submit = document.getElementById("medianSubmit");
-    const answer = document.getElementById("medianAnswer");
+    const answer = document.getElementById("ans-4");
     const copy = document.getElementById("copyMedian");
     copy.style.display = "none";
     answer.textContent = "";
     answer.style.display = "none";
     let solution;
-    const docInput = document.getElementById("medianInput");
+    const docInput = document.getElementById("input-4");
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);
     });
@@ -356,6 +366,7 @@
                 answer.style.display = "inline-block";
                 answer.textContent = "Median: " + solution;
                 copy.style.display = "inline-block";
+                document.getElementById("mem-4").style.display = "inline-block";
             } else {
                 openModal("Please provide a valid input (at least two numbers)");
             }
@@ -366,8 +377,8 @@
 })();
 
 // Differentiation
-const docInput = document.getElementById("diffInput");
-const diffAnswer = document.getElementById("diffAnswer");
+const docInput = document.getElementById("input-5");
+const diffAnswer = document.getElementById("ans-5");
 const diffCopy = document.getElementById("copyDiff");
 let diffSolution;
 (function () {
@@ -414,6 +425,7 @@ function solveDiff() {
                     diffSolution = "f'(x) = " + diffSolution;
                     diffAnswer.textContent = diffSolution;
                     diffCopy.style.display = "inline-block";
+                    document.getElementById("mem-5").style.display = "inline-block";
                 } else {
                     let outputTerms = [];
                     for (let i = 0; i < allValues.length; i++) {
@@ -429,6 +441,7 @@ function solveDiff() {
                     diffAnswer.style.display = "inline-block";
                     diffAnswer.textContent = diffSolution;
                     diffCopy.style.display = "inline-block";
+                    document.getElementById("mem-5").style.display = "inline-block";
                 }
             } else {
                 openModal("Please provide a valid input!");
@@ -502,6 +515,7 @@ function cleanInput(input) {
         input = input.replace(/x\^0/g, "1");
         input = input.replace(/x\^1/g, "x");
         input = input.replace(/\+\-/g, "-");
+        input = input.replace(/(?:\+0)$/, "");
     }
     return input;
 }
@@ -605,7 +619,7 @@ let trigger = "";
 function openConfirm(content, yes, no, triggerIfTrue) {
     if (!yes && !no) {
         console.log("error - not enough parameters. try openModal(text).")
-        return;
+        return "err";
     }
     let test = 1;
     allContent = content + yes + no + triggerIfTrue;

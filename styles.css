@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 header {
     padding-left: calc(100vw - 100%);
 }
@@ -61,16 +65,15 @@ header h1 {
 textarea {
     resize: none;
     margin-bottom: 0px;
-    margin-top: 5px;
     height: auto;
 }
-textarea, .input {
+textarea, input {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     width: 70%;
     font-size: 16px;
-    border: 2px solid black;
+    border: 2px solid #aaa;
     font-family: inherit;
     border-radius: 5px;
     color: black;
@@ -78,6 +81,12 @@ textarea, .input {
     min-width: 150px;
     max-width: 500px;
     vertical-align: middle;
+    margin-top: 5px;
+}
+input {
+    height: 24px;
+    padding-top: 2px;
+    padding-bottom: 0px;
 }
 label {
     font-size: 16px;
@@ -92,13 +101,15 @@ sub {
 }
 button {
     width: 12%;
+    height: 24px;
     max-width: 100px;
     text-align: center;
     padding: 0;
     margin-left: 2px;
     margin-right: 2px;
-    margin-top: 0;
+    margin-top: 5px;
     margin-bottom: 0;
+    display: inline-block;
 }
 button, select {
     font-size: 16px;
@@ -108,7 +119,7 @@ button, select {
     background-color: #d3d3d3;
     border-color: #d3d3d3;
     color: black;
-    min-width: 50px;
+    min-width: 70px;
     vertical-align: middle;
 }
 button:hover {
@@ -131,69 +142,9 @@ p {
     margin-bottom: 12px;
     font-size: 16px;
 }
-input {
-    width: 60%;
-}
-textarea {
-    width: 60%;
-}
 .noWhitespace {
     font-size: 0;
-}
-@media all and (max-width: 238px) {
-    button {
-        margin-left: 0;
-        margin-right: 5px;
-        margin-top: 5px;
-    }
-    .input, textarea {
-        margin-right: 10px;
-    }
-}
-@media all and (max-width: 292px) {
-    label {
-        margin-right: 10px;
-    }
-    select {
-        margin-top: 5px;
-    }
-}
-@media all and (max-width: 318px) and (min-width: 239px) {
-    #calcANS {
-        margin-left: 0px;
-        margin-top: 5px;
-        margin-right: 200px;
-    }
-}
-@media all and (max-width: 400px) {
-    nav li {
-        width: calc((100% / 3));
-    }
-}
-@media all and (max-width: 500px) and (min-width: 401px) {
-    nav li {
-        width: 100px;
-    }
-    header h1 {
-        font-size: 50px;
-    }
-    nav li a {
-        font-size: 20px;
-    }
-}
-@media all and (min-width: 501px) {
-    nav li {
-        width: 100px;
-    }
-    header h1 {
-        font-size: 70px;
-    }
-    nav li a {
-        font-size: 25px;
-    }
-    textarea, .input {
-        border-width: 1px;
-    }
+    width: 100%;
 }
 
 /* Modal */
@@ -273,4 +224,117 @@ textarea {
     width: 60px;
     min-width: 60px;
     margin-top: 10px;
+}
+
+/* Memory */
+.mem {
+    display: none;
+}
+details {
+    border: 2px solid #aaa;
+    border-radius: 4px;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    width: calc(70% - 0.5em);
+    min-width: 300px;
+    max-width: 500px;
+}
+summary {
+    font-weight: bold;
+    margin: -0.5em -0.5em 0;
+    padding: 0.5em;
+}
+details[open] {
+    padding: 0.5em;
+}
+details[open] summary {
+    border-bottom: 2px solid #aaa;
+    margin-bottom: 0.5em;
+}
+
+td, th {
+    border: 2px solid #aaa;
+    width: 50%;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+td {
+    padding-left: 0.5em;
+}
+
+div.noWhitespace>span {
+    display: inline-block;
+    width: 100%;
+}
+
+/* Media Queries*/
+@media (max-width: 238px) {
+    input, textarea {
+        margin-right: 10px;
+    }
+}
+@media (max-width: 271px) {
+    button {
+        margin-left: 0;
+        margin-top: 4px;
+        margin-right: 4px;
+    }
+}
+@media (max-width: 292px) {
+    label {
+        margin-right: 10px;
+    }
+    select {
+        margin-top: 5px;
+    }
+}
+@media (max-width: 400px) {
+    nav li {
+        width: calc((100% / 3));
+    }
+}
+@media (max-width: 500px) and (min-width: 401px) {
+    nav li {
+        width: 100px;
+    }
+    header h1 {
+        font-size: 50px;
+    }
+    nav li a {
+        font-size: 20px;
+    }
+}
+@media (min-width: 501px) {
+    nav li {
+        width: 100px;
+    }
+    header h1 {
+        font-size: 70px;
+    }
+    nav li a {
+        font-size: 25px;
+    }
+}
+@media (max-width: 531px) and (min-width: 272px) {
+    .innerWrap {
+        display: inline-flex;
+        flex-wrap: wrap;
+        width: 70px;
+        gap: 4px;
+        vertical-align: middle;
+        margin-top: 5px;
+    }
+    textarea, input {
+        height: 52px;
+    }
+    input {
+        padding-top: 2px;
+        padding-bottom: 23.8px;
+    }
+    button {
+        margin-top: 0px;
+    }
 }
