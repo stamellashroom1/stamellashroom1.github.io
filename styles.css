@@ -293,7 +293,7 @@ div.noWhitespace>span {
 }
 @media (max-width: 400px) {
     nav li {
-        width: calc((100% / 3));
+        width: 25%;
     }
 }
 @media (max-width: 500px) and (min-width: 401px) {
