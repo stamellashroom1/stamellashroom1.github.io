@@ -8,16 +8,16 @@
     ANS.style.display = "none";
     answer.textContent = "";
     answer.style.display = "none";
-    let numbers = [];
+    let ans;
     const docInput = document.getElementById("input-1");
     ANS.addEventListener("click", () => {
-        document.getElementById("input-1").value = docInput.value + numbers[0];
+        document.getElementById("input-1").value = docInput.value + ans;
     });
     copy.addEventListener("click", () => {
-        navigator.clipboard.writeText(numbers[0]);
+        navigator.clipboard.writeText(ans);
     });
     submit.addEventListener("click", () => {
-        let ans = solveCalc(docInput.value); // call function, recursive
+        ans = solveCalc(docInput.value); // call function, recursive
         if (ans !== "err") {
             answer.style.display = "inline-block"; // display changes after answer had been found
             answer.textContent = "Answer: " + ans;
@@ -174,7 +174,7 @@
     copy.style.display = "none";
     answer.textContent = "";
     answer.style.display = "none";
-    let solution = "";
+    let solution;
     const docInput = document.getElementById("input-2");
     copy.addEventListener("click", () => {
         navigator.clipboard.writeText(solution);

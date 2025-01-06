@@ -1,22 +1,14 @@
 let worldTime = 0;
-// let test = {
-//     a: 0,
-//     b: 0,
-//     c: 0,
-//     d: 0,
-//     e: 0,
-// };
 
 const time = setInterval(() => {
-    worldTime += 0.01;
-    worldTime *= 100;
-    worldTime = Math.round(worldTime);
-    worldTime /= 100;
+    worldTime = Math.round((worldTime * 100 + 1)) / 100;
 }, 10)
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const pixelRatio = window.devicePixelRatio || 1;
+
+let downSizing = 4;
 
 const angleRot = Math.PI / 18; // 10 degrees
 const twoPi = Math.PI * 2;
@@ -97,29 +89,42 @@ let cubes = [ // general 3d rectangular prisms. can be a plane if the width is 0
     },
 ];
 
-let angleXLookup = [];
-let angleYLookup = [];
-let cosXLookup = [];
-let sinXLookup = [];
-let cosYLookup = [];
-let sinYLookup = [];
+let cosXLookup;
+let sinXLookup;
+let cosYLookup;
+let sinYLookup;
 
-let cosCamXLookup = [];
-let cosCamYLookup = [];
-let sinCamXLookup = [];
-let sinCamYLookup = [];
+let cosCamXLookup;
+let cosCamYLookup;
+let sinCamXLookup;
+let sinCamYLookup;
 
-let negSinYLookup = [];
-let negCosYLookup = [];
-let negSinCamYLookup = [];
-let negCosCamYLookup = [];
+let negSinYLookup;
+let negCosYLookup;
+let negSinCamYLookup;
+let negCosCamYLookup;
 
 function init() {
-    canvas.width = Math.round((window.innerWidth * pixelRatio) / 3);
-    canvas.height = Math.round((window.innerHeight * pixelRatio) / 3);
+    canvas.width = Math.ceil((window.innerWidth * pixelRatio) / downSizing);
+    canvas.height = Math.ceil((window.innerHeight * pixelRatio) / downSizing);
     canvas.style.width = `${window.innerWidth}px`;
     canvas.style.height = `${window.innerHeight}px`;
-    ctx.scale(Math.round(pixelRatio / 3), Math.round(pixelRatio / 3));
+    ctx.scale(Math.ceil(pixelRatio / downSizing), Math.ceil(pixelRatio / downSizing));
+
+    cosXLookup = new Float32Array(canvas.width);
+    sinXLookup = new Float32Array(canvas.width);
+    cosYLookup = new Float32Array(canvas.height);
+    sinYLookup = new Float32Array(canvas.height);
+
+    cosCamXLookup = new Float32Array(360);
+    cosCamYLookup = new Float32Array(360);
+    sinCamXLookup = new Float32Array(360);
+    sinCamYLookup = new Float32Array(360);
+
+    negSinYLookup = new Float32Array(canvas.height);
+    negCosYLookup = new Float32Array(canvas.height);
+    negSinCamYLookup = new Float32Array(360);
+    negCosCamYLookup = new Float32Array(360);
 
     let halfHeight = canvas.height / 2;
     let halfWidth = canvas.width / 2;
@@ -127,7 +132,6 @@ function init() {
     for (let x = 0; x < canvas.width; x++) {
         let relativeX = x - halfWidth;
         let angleX = Math.atan2(relativeX, halfWidth);
-        angleXLookup[x] = angleX;
         cosXLookup[x] = Math.cos(angleX);
         sinXLookup[x] = Math.sin(angleX);
     }
@@ -135,7 +139,6 @@ function init() {
     for (let y = 0; y < canvas.height; y++) {
         let relativeY = y - halfHeight;
         let angleY = Math.atan2(relativeY, halfHeight);
-        angleYLookup[y] = angleY;
         cosYLookup[y] = Math.cos(angleY);
         sinYLookup[y] = Math.sin(angleY);
 
@@ -143,7 +146,7 @@ function init() {
         negSinYLookup[y] = Math.sin(-angleY);
     }
 
-    for (let i = 0; i < 360; i += 1) {
+    for (let i = 0; i < 360; i++) {
         const radians = i * piDiv180;
         cosCamXLookup[i] = Math.cos(radians);
         sinCamXLookup[i] = Math.sin(radians);
@@ -153,7 +156,6 @@ function init() {
         negCosCamYLookup[i] = Math.cos(-radians);
         negSinCamYLookup[i] = Math.sin(-radians);
     }
-    
 }
 
 function render() {
@@ -187,22 +189,31 @@ function render() {
 
         while (pixelX < canvas.width) {
 
-            // vector
+            // let cosAngleY = cosYLookup[pixelY] * cosCamYLookup[camY] - sinYLookup[pixelY] * sinCamYLookup[camY];
+            // let cosAngleX = cosXLookup[pixelX] * cosCamXLookup[camX] - sinXLookup[pixelX] * sinCamXLookup[camX];
+            // let sinAngleX = sinXLookup[pixelX] * cosCamXLookup[camX] + cosXLookup[pixelX] * sinCamXLookup[camX];
+            // let sinNegAngleY = negSinYLookup[pixelY] * negCosCamYLookup[camY] + negCosYLookup[pixelY] * negSinCamYLookup[camY];
             // let vector = {
-            //     x: Math.cos(angleX) * Math.cos(angleY),
-            //     y: Math.sin(angleX) * Math.cos(angleY),
-            //     z: Math.sin(-angleY),
+            //     x: cosAngleX * cosAngleY,
+            //     y: sinAngleX * cosAngleY,
+            //     z: sinNegAngleY,
             // };
 
-            let cosAngleY = cosYLookup[pixelY] * cosCamYLookup[camY] - sinYLookup[pixelY] * sinCamYLookup[camY];
-            let cosAngleX = cosXLookup[pixelX] * cosCamXLookup[camX] - sinXLookup[pixelX] * sinCamXLookup[camX];
-            let sinAngleX = sinXLookup[pixelX] * cosCamXLookup[camX] + cosXLookup[pixelX] * sinCamXLookup[camX];
-            let sinNegAngleY = negSinYLookup[pixelY] * negCosCamYLookup[camY] + negCosYLookup[pixelY] * negSinCamYLookup[camY];
+            const cosCamX = cosCamXLookup[camX];
+            const sinCamX = sinCamXLookup[camX];
+            const sinX = sinXLookup[pixelX];
+            const cosX = cosXLookup[pixelX];
+        
+            const cosAngleY = cosYLookup[pixelY] * cosCamYLookup[camY] - sinYLookup[pixelY] * sinCamYLookup[camY];
+            const cosAngleX = cosX * cosCamX - sinX * sinCamX;
+            const sinAngleX = sinX * cosCamX + cosX * sinCamX;
+            const sinNegAngleY = negSinYLookup[pixelY] * negCosCamYLookup[camY] + negCosYLookup[pixelY] * negSinCamYLookup[camY];
+        
             let vector = {
                 x: cosAngleX * cosAngleY,
                 y: sinAngleX * cosAngleY,
                 z: sinNegAngleY,
-            };
+            }
 
             let currentLowest = {
                 tValue: Infinity,
@@ -233,72 +244,12 @@ function render() {
             }
 
             for (let i = 0; i < cubes.length; i++) {
-                // if (vector.y < 0) {
-                //     test.e++;
-                // }
                 let cube = cubes[i];
-                // if (cube.id === "blue-Left") {
-                //     test.d++;
-                // }
 
                 if (!cube.visible) {
                     break;
                 }
 
-                // // first check if the ray is anywhere near the cube
-                // if (vector.x > 0) {
-                //     if (playerX > cube.x[1]) {
-                //         break;
-                //     }
-                // } else if (vector.x < 0) {
-                //     if (playerX < cube.x[0]) {
-                //         break;
-                //     }
-                // } else {
-                //     if (playerX < cube.x[0] || playerX > cube.x[1]) {
-                //         break;
-                //     }
-                // }
-
-                // if (vector.y > 0) {
-                //     if (playerY > cube.y[1]) {
-                //         if (cube.id === "blue-Left") {
-                //             test.a++;
-                //         }
-                //         break;
-                //     }
-                // } else if (vector.y < 0) {
-                //     if (playerY < cube.y[0]) {
-                //         if (cube.id === "blue-Left") {
-                //             test.b++;
-                //         }
-                //         break;
-                //     }
-                // } else {
-                //     if (playerY < cube.y[0] || playerY > cube.y[1]) {
-                //         if (cube.id === "blue-Left") {
-                //             test.c++;
-                //         }
-                //         break;
-                //     }
-                // }
-
-                // if (vector.z > 0) {
-                //     if (playerZ > cube.z[1]) {
-                //         break;
-                //     }
-                // } else if (vector.z < 0) {
-                //     if (playerZ < cube.z[0]) {
-                //         break;
-                //     }
-                // } else {
-                //     if (playerZ < cube.z[0] || playerZ > cube.z[1]) {
-                //         break;
-                //     }
-                // }
-
-
-                // then raycast
                 let computed = {
                     xt: {
                         min: -Infinity,
@@ -342,10 +293,6 @@ function render() {
                     currentLowest.colour.g = cube.colour.g;
                     currentLowest.colour.b = cube.colour.b;
                     currentLowest.colour.a = cube.colour.a;
-                    // console.log(vector);
-                    // console.log(computed);
-                    // console.log(overlap1, overlap2);
-                    // console.log(pixelX, pixelY);
                 }
             }
 
@@ -360,8 +307,6 @@ function render() {
         pixelY++;
     }
     ctx.putImageData(imageData, 0, 0);
-    // console.log(imageData);
-    // console.log(data);
 }
 
 init();
@@ -459,7 +404,21 @@ function gameLoop() {
 
 requestAnimationFrame(gameLoop);
 
-document.addEventListener("resize", () => {
+window.addEventListener("resize", () => {
     init();
     render();
+});
+
+document.addEventListener("keypress", (event) => {
+    if (event.key === "[") {
+        downSizing += 0.5;
+        init()
+        render()
+    } else if (event.key === "]") {
+        if (downSizing >= 1.5) {
+            downSizing -= 0.5;
+            init()
+            render()
+        }
+    }
 });
