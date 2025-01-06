@@ -1,5 +1,22 @@
+let worldTime = 0;
+// let test = {
+//     a: 0,
+//     b: 0,
+//     c: 0,
+//     d: 0,
+//     e: 0,
+// };
+
+const time = setInterval(() => {
+    worldTime += 0.01;
+    worldTime *= 100;
+    worldTime = Math.round(worldTime);
+    worldTime /= 100;
+}, 10)
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const pixelRatio = window.devicePixelRatio || 1;
 
 const angleRot = Math.PI / 18; // 10 degrees
 const twoPi = Math.PI * 2;
@@ -27,16 +44,55 @@ let planes = [
     },
 ];
 
-let cubes = [
+let cubes = [ // general 3d rectangular prisms. can be a plane if the width is 0
     {
-        x: [1, 2],
-        y: [1, 2],
-        z: [0, 2],
+        id: "red-Right-Movement",
+        x: [1, 3],
+        y: [1, 3],
+        z: [0, 3],
         colour: {
             r: 255,
             g: 0,
             b: 0,
             a: 255,
+        },
+        movement: {
+            type: "loop",
+            axies: ["x"], // multiples for different axies
+            speeds: [2], // per second
+            times: [10], // total time
+            starts: [1],
+            offsets: [0],
+        },
+        visible: true,
+        wireframe: {
+            colour: {
+                r: 0,
+                g: 255,
+                b: 0,
+                a: 255,
+            },
+        },
+    },
+    {
+        id: "blue-Left",
+        x: [1, 3],
+        y: [-3, -1],
+        z: [0, 3],
+        colour: {
+            r: 0,
+            g: 0,
+            b: 255,
+            a: 255,
+        },
+        visible: true,
+        wireframe: {
+            colour: {
+                r: 255,
+                g: 0,
+                b: 0,
+                a: 255,
+            },
         },
     },
 ];
@@ -59,6 +115,12 @@ let negSinCamYLookup = [];
 let negCosCamYLookup = [];
 
 function init() {
+    canvas.width = Math.round((window.innerWidth * pixelRatio) / 3);
+    canvas.height = Math.round((window.innerHeight * pixelRatio) / 3);
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    ctx.scale(Math.round(pixelRatio / 3), Math.round(pixelRatio / 3));
+
     let halfHeight = canvas.height / 2;
     let halfWidth = canvas.width / 2;
 
@@ -95,10 +157,27 @@ function init() {
 }
 
 function render() {
+    // movement
+    for (let i = 0; i < cubes.length; i++) {
+        let cube = cubes[i];
+        if (cube.movement) {
+            if (cube.movement.type === "loop") {
+                for (let j = 0; j < cube.movement.axies.length; j++) {
+                    let loopTime = cube.movement.times[j];
+                    let relTime = (worldTime + cube.movement.offsets[j]) % loopTime;
+                    let dimension = cube[cube.movement.axies[j]][1] - cube[cube.movement.axies[j]][0];
+                    if (relTime > loopTime / 2) {
+                        relTime = loopTime - relTime;
+                    }
+                    cube[cube.movement.axies[j]][0] = cube.movement.starts[j] + relTime * cube.movement.speeds[j];
+                    cube[cube.movement.axies[j]][1] = cube[cube.movement.axies[j]][0] + dimension;
+                }
+            }
+        }
+    }
+
     let pixelX = 0;
     let pixelY = 0;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.createImageData(canvas.width, canvas.height);
     const data = imageData.data;
@@ -154,7 +233,72 @@ function render() {
             }
 
             for (let i = 0; i < cubes.length; i++) {
+                // if (vector.y < 0) {
+                //     test.e++;
+                // }
                 let cube = cubes[i];
+                // if (cube.id === "blue-Left") {
+                //     test.d++;
+                // }
+
+                if (!cube.visible) {
+                    break;
+                }
+
+                // // first check if the ray is anywhere near the cube
+                // if (vector.x > 0) {
+                //     if (playerX > cube.x[1]) {
+                //         break;
+                //     }
+                // } else if (vector.x < 0) {
+                //     if (playerX < cube.x[0]) {
+                //         break;
+                //     }
+                // } else {
+                //     if (playerX < cube.x[0] || playerX > cube.x[1]) {
+                //         break;
+                //     }
+                // }
+
+                // if (vector.y > 0) {
+                //     if (playerY > cube.y[1]) {
+                //         if (cube.id === "blue-Left") {
+                //             test.a++;
+                //         }
+                //         break;
+                //     }
+                // } else if (vector.y < 0) {
+                //     if (playerY < cube.y[0]) {
+                //         if (cube.id === "blue-Left") {
+                //             test.b++;
+                //         }
+                //         break;
+                //     }
+                // } else {
+                //     if (playerY < cube.y[0] || playerY > cube.y[1]) {
+                //         if (cube.id === "blue-Left") {
+                //             test.c++;
+                //         }
+                //         break;
+                //     }
+                // }
+
+                // if (vector.z > 0) {
+                //     if (playerZ > cube.z[1]) {
+                //         break;
+                //     }
+                // } else if (vector.z < 0) {
+                //     if (playerZ < cube.z[0]) {
+                //         break;
+                //     }
+                // } else {
+                //     if (playerZ < cube.z[0] || playerZ > cube.z[1]) {
+                //         break;
+                //     }
+                // }
+
+
+                // then raycast
                 let computed = {
                     xt: {
                         min: -Infinity,
@@ -232,12 +376,20 @@ const keyStates = {
     ArrowLeft: false,
     ArrowDown: false,
     ArrowRight: false,
-}
+    Space: false,
+    Shift: false,
+};
 
 document.addEventListener("keydown", (event) => {
     const key = event.key;
     if (Object.hasOwn(keyStates, key)) {
         keyStates[key] = true;
+    }
+    if (Object.hasOwn(keyStates, key.toLowerCase())) {
+        keyStates[key.toLowerCase()] = true;
+    }
+    if (key === " ") {
+        keyStates.Space = true;
     }
 });
 
@@ -246,10 +398,15 @@ document.addEventListener("keyup", (event) => {
     if (Object.hasOwn(keyStates, key)) {
         keyStates[key] = false;
     }
+    if (Object.hasOwn(keyStates, key.toLowerCase())) {
+        keyStates[key.toLowerCase()] = false;
+    }
+    if (key === " ") {
+        keyStates.Space = false;
+    }
 });
 
 function gameLoop() {
-    let check = false;
     const actions = {
         w: () => {
             playerX += Math.cos(camX * piDiv180) * 0.05;
@@ -283,17 +440,19 @@ function gameLoop() {
             camX += 1;
             camX = (camX + 360) % 360;
         },
+        Space: () => {
+            playerZ += 0.1;
+        },
+        Shift: () => {
+            playerZ -= 0.1;
+        },
     };
     for (const key in actions) {
         if (keyStates[key]) {
             actions[key]();
-            check = true;
         }
     }
-    if (check) {
-        render();
-        // console.log("rendered");
-    }
+    render();
 
     requestAnimationFrame(gameLoop);
 };
