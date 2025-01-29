@@ -7,7 +7,6 @@ const table = document.getElementById("memTable");
 let storedValues = {};
 let storedKeys = localStorage.getItem("memList") === null ? [] : localStorage.getItem("memList").split(";");
 
-console.log(storedKeys);
 for (let i = 0; i < storedKeys.length; i++) {
     if (storedKeys[i]) {
         let value = localStorage.getItem(storedKeys[i]);
