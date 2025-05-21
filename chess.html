@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="./styles.css">
-        <title>stamellashroom1 | About</title>
+        <title>stamellashroom1 | Chess</title>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -28,6 +28,33 @@
         <div class="leftMargin rightMargin">
             <h3>Chess</h3>
             <p>Real-time friend vs friend chess, no account required.</p>
+            <div class="chessWrapper">
+                <div class="boardWrapper">
+                    <table id="board">
+                        <tr><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"></td></tr>
+                        <tr><td class="black"></td><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td></tr>
+                        <tr><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"></td></tr>
+                        <tr><td class="black"></td><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td></tr>
+                        <tr><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"></td></tr>
+                        <tr><td class="black"></td><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td></tr>
+                        <tr><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"></td></tr>
+                        <tr><td class="black"></td><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td><td class="black"><td class="white"></td></tr>
+                    </table>
+                </div>
+                <div class="chessSidebar">
+                    <div>
+                        <h4>Moves</h4>
+                        <table>
+                            <tr><th style="width: 25%;">Move No.</th><th>White</th><th>Black</th></tr>
+                        </table>
+                    </div>
+                    <br>
+                    <span><button>Back</button><button>Forwards</button></span>
+                    <br>
+                    <span><input placeholder="Input game code..." style="width: 50px;"><button>Join</button></span>
+                </div>
+            </div>
         </div>
+        <script src="chess.js"></script>
     </body>
 </html>
