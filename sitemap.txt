@@ -2,3 +2,4 @@ https://stamellashroom1.github.io/
 https://stamellashroom1.github.io/about.html
 https://stamellashroom1.github.io/tools.html
 https://stamellashroom1.github.io/render.html
+https://stamellashroom1.github.io/chess.html

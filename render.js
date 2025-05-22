@@ -50,11 +50,11 @@ let cubes = [ // general 3d rectangular prisms. can be a plane if the width is 0
         },
         movement: {
             type: "loop",
-            axies: ["x"], // multiples for different axies
-            speeds: [2], // per second
-            times: [10], // total time
-            starts: [1],
-            offsets: [0],
+            axies: ["x", "y"], // multiples for different axies
+            speeds: [2, 2], // per second
+            times: [10, 10], // total time
+            starts: [1, 1],
+            offsets: [0, 0],
         },
         visible: true,
         wireframe: {

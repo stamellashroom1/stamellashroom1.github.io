@@ -317,21 +317,34 @@ div.noWhitespace>span {
 #board td {
     width: 12.5%;
     padding: 0;
+    text-align: center;
+    vertical-align: middle;
 }
 #board tr, #board td {
     border: none;
 }
 .white {
-    background-color: white;
+    background-color: lightblue;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+/* background-image: url(./chess_pieces/bk.png); */
 .black {
     background-color: gray;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .chessWrapper button {
     margin-left: 0;
     margin-right: 4px;
     width: 25%;
 }
+.highlight {
+    background-color: lightyellow;
+}
+
 @media (max-width: 700px) {
     .chessWrapper {
         flex-direction: column;
