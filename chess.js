@@ -88,11 +88,102 @@ function attemptMove() {
             } else if (cell.classList.contains("move")) {
                 to = [x, y];
                 if (cell.style.backgroundImage !== "none") {
-                    takes = true;
+                    takes = cell.style.backgroundImage[21];
+                } else {
+                    takes = "none";
                 }
             }
         }
     }
+
+    let moveValid = false;
+
+    // pawn
+    if (piece === "p") {
+        const move = moves[moves.length - 1];
+        if (colour === "w") {
+            if (from[1] <= to[1]) { // moving to the side or backwards
+                return
+            } else if ( // moving 2x forwards on 1st move
+                from[1] === 6 &&
+                to[1] === 4 &&
+                takes === "none" &&
+                board.rows[5].cells[from[0]].style.backgroundImage === "none" &&
+                from[0] === to[0]
+            ) {
+                moveValid = !checkTest()
+            } else if ( // en passant
+                from[1] === 3 &&
+                to[1] === 2 &&
+                Math.abs(from[0] - to[0]) === 1 &&
+                move.piece === "p" &&
+                move.to[1] - move.from[1] === 2 &&
+                move.from[0] === to[0]
+            ) {
+                moveValid = !checkTest()
+                if (moveValid) {
+                    takes = "p";
+                    board.rows[move.to[1]].cells[move.to[0]].style.backgroundImage = "none";
+                }
+            } else if ( // normal takes
+                takes !== "none" &&
+                to[1] + 1 === from[1] &&
+                Math.abs(to[0] - from[0]) === 1
+            ) {
+                moveValid = !checkTest()
+            } else if ( // normal move
+                to[0] === from[0] &&
+                to[1] + 1 === from[1] &&
+                takes === "none"
+            ) {
+                moveValid = !checkTest()
+            }
+        } else {
+            if (to[1] <= from[1]) { // moving sideways or backwards
+                console.log("test")
+                return
+            } else if ( // 2x move
+                from[1] === 1 &&
+                to[1] === 3 &&
+                takes === "none" &&
+                board.rows[2].cells[from[0]].style.backgroundImage === "none" &&
+                from[0] === to[0]
+            ) {
+                moveValid = !checkTest()
+            } else if ( // en passant
+                from[1] === 4 &&
+                to[1] === 5 &&
+                Math.abs(from[0] - to[0]) === 1 &&
+                move.piece === "p" &&
+                move.from[1] - move.to[1] === 2 &&
+                move.from[0] === to[0] &&
+                takes === "none"
+            ) {
+                moveValid = !checkTest()
+                if (moveValid) {
+                    takes = "p";
+                    board.rows[move[to[1]]].cells[move[to[0]]].style.backgroundImage = "none";
+                }
+            } else if ( // normal takes
+                takes !== "none" &&
+                from[1] + 1 === to[1] &&
+                Math.abs(to[0] - from[0]) === 1
+            ) {
+                moveValid = !checkTest()
+            } else if ( // normal move
+                to[0] === from[0] &&
+                from[1] + 1 === to[1] &&
+                takes === "none"
+            ) {
+                moveValid = !checkTest()
+            }
+        }
+    }
+
+    if (!moveValid) {
+        return
+    }
+
     // quick and dirty, no movement checks
     board.rows[from[1]].cells[from[0]].style.backgroundImage = "none";
     board.rows[to[1]].cells[to[0]].style.backgroundImage = `url("./chess_pieces/${colour}${piece}.png")`;
@@ -108,4 +199,9 @@ function attemptMove() {
     } else {
         colour = "w";
     }
+}
+
+function checkTest() {
+    // return true if in check
+    return false
 }
