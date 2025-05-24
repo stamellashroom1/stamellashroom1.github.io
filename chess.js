@@ -178,13 +178,66 @@ function attemptMove() {
                 moveValid = !checkTest()
             }
         }
+    } else if (piece === "n") {
+        if (
+            (Math.abs(to[1] - from[1]) === 2 &&
+            Math.abs(to[0] - from[0]) === 1) ||
+            (Math.abs(to[1] - from[1]) === 1 &&
+            Math.abs(to[0] - from[0]) === 2)
+        ) {
+            moveValid = !checkTest()
+        }
+    } else if (piece === "r") {
+        if (from[1] === to[1]) {
+            if (from[0] < to[0]) {
+                for (let i = from[0] + 1; i < to[0]; i++) {
+                    if (board.rows[from[1]].cells[i].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            } else {
+                for (let i = to[0] + 1; i < from[0]; i++) {
+                    if (board.rows[from[1]].cells[i].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            }
+        } else if (from[0] === to[0]) {
+            if (from[1] < to[1]) {
+                for (let i = from[1] + 1; i < to[1]; i++) {
+                    if (board.rows[i].cells[from[0]].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            } else {
+                for (let i = to[1] + 1; i < from[1]; i++) {
+                    if (board.rows[i].cells[from[0]].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            }
+        }
+        moveValid = !checkTest()
+    } else if (piece === "b") {
+        // check that its a diagonal
+        if (Math.abs((to[0] - from[0]) / (to[1] - from[1])) !== 1) {
+            console.log("test1")
+            return
+        }
+        for (let i = 1; i < Math.abs(to[0] - from[0]); i++) {
+            let y = to[1] - from[1] < 0 ? -1 : 1;
+            let x = to[0] - from[0] < 0 ? -1 : 1;
+            if (board.rows[from[1] + y * i].cells[from[0] + x * i].style.backgroundImage !== "none") {
+                return
+            }
+        }
+        moveValid = !checkTest()
     }
 
     if (!moveValid) {
         return
     }
 
-    // quick and dirty, no movement checks
     board.rows[from[1]].cells[from[0]].style.backgroundImage = "none";
     board.rows[to[1]].cells[to[0]].style.backgroundImage = `url("./chess_pieces/${colour}${piece}.png")`;
     moves.push({
