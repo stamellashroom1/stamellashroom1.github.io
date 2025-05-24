@@ -306,6 +306,7 @@ div.noWhitespace>span {
 .chessSidebar {
     width: min(80vh, 90vw);
     flex-shrink: 1;
+    display: none;
 }
 #board {
     width: 100%;

@@ -1,4 +1,8 @@
 let colour = "w"
+const castlingRights = {
+    "w": {"k": true, "q": true},
+    "b": {"k": true, "q": true}
+}
 
 const board = document.getElementById("board");
 
@@ -178,6 +182,7 @@ function attemptMove() {
                 moveValid = !checkTest()
             }
         }
+
     } else if (piece === "n") {
         if (
             (Math.abs(to[1] - from[1]) === 2 &&
@@ -187,6 +192,7 @@ function attemptMove() {
         ) {
             moveValid = !checkTest()
         }
+
     } else if (piece === "r") {
         if (from[1] === to[1]) {
             if (from[0] < to[0]) {
@@ -218,20 +224,139 @@ function attemptMove() {
             }
         }
         moveValid = !checkTest()
-    } else if (piece === "b") {
-        // check that its a diagonal
-        if (Math.abs((to[0] - from[0]) / (to[1] - from[1])) !== 1) {
-            console.log("test1")
-            return
-        }
-        for (let i = 1; i < Math.abs(to[0] - from[0]); i++) {
-            let y = to[1] - from[1] < 0 ? -1 : 1;
-            let x = to[0] - from[0] < 0 ? -1 : 1;
-            if (board.rows[from[1] + y * i].cells[from[0] + x * i].style.backgroundImage !== "none") {
-                return
+        if (moveValid) {
+            if (from[0] === 0 && from[1] === 0) {
+                castlingRights.b.q = false;
+            } else if (from[7] === 0 && from[1] === 0) {
+                castlingRights.b.k = false;
+            } else if (from[0] === 0 && from[1] === 7) {
+                castlingRights.w.q = false;
+            } else if (from[0] === 7 && from[1] === 7) {
+                castlingRights.w.k = false;
             }
         }
-        moveValid = !checkTest()
+
+    } else if (piece === "b") {
+        // check that its a diagonal
+        if (Math.abs((to[0] - from[0]) / (to[1] - from[1])) === 1) {
+            for (let i = 1; i < Math.abs(to[0] - from[0]); i++) {
+                let y = to[1] - from[1] < 0 ? -1 : 1;
+                let x = to[0] - from[0] < 0 ? -1 : 1;
+                if (board.rows[from[1] + y * i].cells[from[0] + x * i].style.backgroundImage !== "none") {
+                    return
+                }
+            }
+            moveValid = !checkTest()
+        }
+
+    } else if (piece === "q") {
+        if (from[1] === to[1]) {
+            if (from[0] < to[0]) {
+                for (let i = from[0] + 1; i < to[0]; i++) {
+                    if (board.rows[from[1]].cells[i].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            } else {
+                for (let i = to[0] + 1; i < from[0]; i++) {
+                    if (board.rows[from[1]].cells[i].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            }
+            moveValid = !checkTest()
+        } else if (from[0] === to[0]) {
+            if (from[1] < to[1]) {
+                for (let i = from[1] + 1; i < to[1]; i++) {
+                    if (board.rows[i].cells[from[0]].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            } else {
+                for (let i = to[1] + 1; i < from[1]; i++) {
+                    if (board.rows[i].cells[from[0]].style.backgroundImage !== "none") {
+                        return
+                    }
+                }
+            }
+            moveValid = !checkTest()
+        } else if (Math.abs((to[0] - from[0]) / (to[1] - from[1])) === 1) {
+            for (let i = 1; i < Math.abs(to[0] - from[0]); i++) {
+                let y = to[1] - from[1] < 0 ? -1 : 1;
+                let x = to[0] - from[0] < 0 ? -1 : 1;
+                if (board.rows[from[1] + y * i].cells[from[0] + x * i].style.backgroundImage !== "none") {
+                    return
+                }
+            }
+            moveValid = !checkTest()
+        }
+
+    } else if (piece === "k") {
+        if (!checkTest()) { // no castling in check
+            if (colour === "w") {
+                if (
+                    to[0] === 2 &&
+                    castlingRights.w.q &&
+                    board.rows[7].cells[3].style.backgroundImage === "none" &&
+                    board.rows[7].cells[2].style.backgroundImage === "none" &&
+                    board.rows[7].cells[1].style.backgroundImage === "none" &&
+                    !checkSquare(3, 7, "w") &&
+                    !checkSquare(2, 7, "w") &&
+                    !checkSquare(1, 7, "w")
+                ) {
+                    board.rows[7].cells[0].style.backgroundImage = "none";
+                    setSquare(3, 7, "wr")
+                    moveValid = true;
+                } else if (
+                    to[0] === 6 &&
+                    castlingRights.w.k &&
+                    board.rows[7].cells[5].style.backgroundImage === "none" &&
+                    board.rows[7].cells[6].style.backgroundImage === "none" &&
+                    !checkSquare(5, 7, "w") &&
+                    !checkSquare(6, 7, "w")
+                ) {
+                    board.rows[7].cells[7].style.backgroundImage = "none";
+                    setSquare(5, 7, "wr")
+                    moveValid = true;
+                }
+            } else {
+                if (
+                    to[0] === 2 &&
+                    castlingRights.b.q &&
+                    board.rows[0].cells[3].style.backgroundImage === "none" &&
+                    board.rows[0].cells[2].style.backgroundImage === "none" &&
+                    board.rows[0].cells[1].style.backgroundImage === "none" &&
+                    !checkSquare(3, 0, "b") &&
+                    !checkSquare(2, 0, "b") &&
+                    !checkSquare(1, 0, "b")
+                ) {
+                    board.rows[0].cells[0].style.backgroundImage = "none";
+                    setSquare(3, 0, "br")
+                    moveValid = true;
+                } else if (
+                    to[0] === 6 &&
+                    castlingRights.b.k &&
+                    board.rows[0].cells[5].style.backgroundImage === "none" &&
+                    board.rows[0].cells[6].style.backgroundImage === "none" &&
+                    !checkSquare(5, 0, "w") &&
+                    !checkSquare(6, 0, "w")
+                ) {
+                    board.rows[0].cells[7].style.backgroundImage = "none";
+                    setSquare(5, 0, "br")
+                    moveValid = true;
+                }
+            }
+        }
+        if (
+            Math.abs(to[0] - from[0]) < 2 &&
+            Math.abs(to[1] - from[1]) < 2
+        ) {
+            moveValid = !checkTest()
+            if (moveValid) {
+                castlingRights[colour].q = false;
+                castlingRights[colour].k = false;
+            }
+        }
     }
 
     if (!moveValid) {
@@ -256,5 +381,9 @@ function attemptMove() {
 
 function checkTest() {
     // return true if in check
+    return false
+}
+
+function checkSquare(x, y, colour) {
     return false
 }
