@@ -342,9 +342,6 @@ div.noWhitespace>span {
     margin-right: 4px;
     width: 25%;
 }
-.highlight {
-    background-color: lightyellow;
-}
 
 @media (max-width: 700px) {
     .chessWrapper {
@@ -384,7 +381,7 @@ div.noWhitespace>span {
 }
 @media (max-width: 500px) and (min-width: 401px) {
     nav li {
-        width: 100px;
+        width: 130px;
     }
     header h1 {
         font-size: 50px;

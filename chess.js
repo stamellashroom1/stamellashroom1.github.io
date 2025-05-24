@@ -62,6 +62,7 @@ cells.forEach(cell => {
             })
             if (!highlight) {
                 cell.classList.add("highlight");
+
             }
         } else {
             cell.classList.add("move");
@@ -74,6 +75,30 @@ cells.forEach(cell => {
             cell.classList.remove("move");
         }
     });
+});
+
+const highlightObserver = new MutationObserver((mutations) => {
+    mutations.forEach(mutation => {
+        if (mutation.attributeName === "class") {
+            if (mutation.target.classList.contains("highlight")) {
+                if (mutation.target.style.backgroundImage[20] === "w") {
+                    mutation.target.style.backgroundColor = "lightgreen";
+                } else {
+                    mutation.target.style.backgroundColor = "lightgreen"
+                }
+            } else {
+                if (mutation.target.classList.contains("white")) {
+                    mutation.target.style.backgroundColor = "lightblue";
+                } else {
+                    mutation.target.style.backgroundColor = "gray"
+                }
+            }
+        }
+    })
+})
+
+cells.forEach(cell => {
+    highlightObserver.observe(cell, {attributes: true, attributeFilter: ["class"]})
 });
 
 const moves = [];
