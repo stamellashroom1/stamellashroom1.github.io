@@ -169,7 +169,7 @@ function attemptMove() {
             }
         } else {
             if (to[1] <= from[1]) { // moving sideways or backwards
-                console.log("test")
+                // console.log("test")
                 return
             } else if ( // 2x move
                 from[1] === 1 &&
@@ -327,7 +327,8 @@ function attemptMove() {
                     board.rows[7].cells[1].style.backgroundImage === "none" &&
                     !checkSquare(3, 7, "w") &&
                     !checkSquare(2, 7, "w") &&
-                    !checkSquare(1, 7, "w")
+                    !checkSquare(1, 7, "w") &&
+                    board.rows[7].cells[0].style.backgroundImage === "wr"
                 ) {
                     board.rows[7].cells[0].style.backgroundImage = "none";
                     setSquare(3, 7, "wr")
@@ -338,7 +339,8 @@ function attemptMove() {
                     board.rows[7].cells[5].style.backgroundImage === "none" &&
                     board.rows[7].cells[6].style.backgroundImage === "none" &&
                     !checkSquare(5, 7, "w") &&
-                    !checkSquare(6, 7, "w")
+                    !checkSquare(6, 7, "w") &&
+                    board.rows[7].cells[7].style.backgroundImage === "wr"
                 ) {
                     board.rows[7].cells[7].style.backgroundImage = "none";
                     setSquare(5, 7, "wr")
@@ -353,7 +355,8 @@ function attemptMove() {
                     board.rows[0].cells[1].style.backgroundImage === "none" &&
                     !checkSquare(3, 0, "b") &&
                     !checkSquare(2, 0, "b") &&
-                    !checkSquare(1, 0, "b")
+                    !checkSquare(1, 0, "b") &&
+                    board.rows[0].cells[0].style.backgroundImage === "br"
                 ) {
                     board.rows[0].cells[0].style.backgroundImage = "none";
                     setSquare(3, 0, "br")
@@ -364,7 +367,8 @@ function attemptMove() {
                     board.rows[0].cells[5].style.backgroundImage === "none" &&
                     board.rows[0].cells[6].style.backgroundImage === "none" &&
                     !checkSquare(5, 0, "w") &&
-                    !checkSquare(6, 0, "w")
+                    !checkSquare(6, 0, "w") &&
+                    board.rows[0].cells[7].style.backgroundImage === "br"
                 ) {
                     board.rows[0].cells[7].style.backgroundImage = "none";
                     setSquare(5, 0, "br")
@@ -411,7 +415,7 @@ function checkTest(kx, ky) {
     }
     // get king location
     const kingLocation = [];
-    if (kx && ky) {
+    if (kx !== undefined && ky !== undefined) {
         kingLocation[0] = kx;
         kingLocation[1] = ky;
     } else {
@@ -424,6 +428,7 @@ function checkTest(kx, ky) {
             }
         }
     }
+
     if (colour === "w") {
         if ( // pawns
             (getSquare(kingLocation[0] - 1, kingLocation[1] - 1) === "bp" &&
@@ -446,25 +451,18 @@ function checkTest(kx, ky) {
     if ( // knights
         (getSquare(kingLocation[0] - 1, kingLocation[1] - 2) === `${notColour}n` && // ^^<
         to[0] !== kingLocation[0] - 1 && to[1] !== kingLocation[1] - 2) ||
-
         (getSquare(kingLocation[0] + 1, kingLocation[1] - 2) === `${notColour}n` && // >^^
         to[0] !== kingLocation[0] + 1 && to[1] !== kingLocation[1] - 2) ||
-
         (getSquare(kingLocation[0] - 2, kingLocation[1] - 1) === `${notColour}n` && // ^<<
         to[0] !== kingLocation[0] - 2 && to[1] !== kingLocation[1] - 1) ||
-
         (getSquare(kingLocation[0] + 2, kingLocation[1] - 1) === `${notColour}n` && // >>^
         to[0] !== kingLocation[0] + 2 && to[1] !== kingLocation[1] - 1) ||
-
         (getSquare(kingLocation[0] - 1, kingLocation[1] + 2) === `${notColour}n` && // \/\/<
         to[0] !== kingLocation[0] - 1 && to[1] !== kingLocation[1] + 2) ||
-
         (getSquare(kingLocation[0] + 1, kingLocation[1] + 2) === `${notColour}n` && // >\/\/
         to[0] !== kingLocation[0] + 1 && to[1] !== kingLocation[1] + 2) ||
-
         (getSquare(kingLocation[0] - 2, kingLocation[1] + 1) === `${notColour}n` && // \/<<
         to[0] !== kingLocation[0] - 2 && to[1] !== kingLocation[1] + 1) ||
-
         (getSquare(kingLocation[0] + 2, kingLocation[1] + 1) === `${notColour}n` && // >>\/
         to[0] !== kingLocation[0] + 2 && to[1] !== kingLocation[1] + 1)
     ) {
@@ -476,7 +474,7 @@ function checkTest(kx, ky) {
             square === `${notColour}r`) {
             return true
         }
-        if (square[0] === colour && from[0] !== i && from[1] !== kingLocation[1]) {
+        if (square && !(from[0] === i && from[1] === kingLocation[1])) {
             break
         }
         if (to[0] === i && to[1] === kingLocation[1]) {
@@ -489,7 +487,7 @@ function checkTest(kx, ky) {
             square === `${notColour}r`) {
             return true
         }
-        if (square[0] === colour && from[0] !== i && from[1] !== kingLocation[1]) {
+        if (square && !(from[0] === i && from[1] === kingLocation[1])) {
             break
         }
         if (to[0] === i && to[1] === kingLocation[1]) {
@@ -502,7 +500,7 @@ function checkTest(kx, ky) {
             square === `${notColour}r`) {
             return true
         }
-        if (square[0] === colour && from[1] !== i && from[0] !== kingLocation[0]) {
+        if (square && !(from[1] === i && from[0] === kingLocation[0])) {
             break
         }
         if (to[1] === i && to[0] === kingLocation[0]) {
@@ -515,68 +513,62 @@ function checkTest(kx, ky) {
             square === `${notColour}r`) {
             return true
         }
-        if (square[0] === colour && from[1] !== i && from[0] !== kingLocation[0]) {
+        if (square && !(from[1] === i && from[0] === kingLocation[0])) {
             break
         }
         if (to[1] === i && to[0] === kingLocation[0]) {
             break
         }
     }
-    for (let i = -1; Math.min(kingLocation[0], kingLocation[1]) + i > -1; i--) { // <^ bishop + queen
-        let square = getSquare(kingLocation[0] + i, kingLocation[1] + i);
+    for (let x = kingLocation[0] - 1, y = kingLocation[1] - 1; x > -1 && y > -1; x--, y--) { // <^ bishop + queen
+        let square = getSquare(x, y);
         if (square === `${notColour}q` ||
             square === `${notColour}b`) {
             return true
         }
-        if (square[0] === colour && from[0] !== kingLocation[0] + i && from[1] !== kingLocation[1] + i) {
+        if (square && !(from[0] === x && from[1] === y)) {
             break
         }
-        if (to[0] === kingLocation[0] + i && to[1] === kingLocation[1] + i) {
+        if (to[0] === x && to[1] === y) {
             break
         }
     }
-    for (let i = 1; Math.max(kingLocation[0], kingLocation[1]) + i < 8; i++) { // >\/ bishop + queen
-        let square = getSquare(kingLocation[0] + i, kingLocation[1] + i);
+    for (let x = kingLocation[0] + 1, y = kingLocation[1] + 1; x < 8 && y < 8; x++, y++) { // >\/ bishop + queen
+        let square = getSquare(x, y);
         if (square === `${notColour}q` ||
             square === `${notColour}b`) {
             return true
         }
-        if (square[0] === colour && from[0] !== kingLocation[0] + i && from[1] !== kingLocation[1] + i) {
+        if (square && !(from[0] === x && from[1] === y)) {
             break
         }
-        if (to[0] === kingLocation[0] + i && to[1] === kingLocation[1] + i) {
+        if (to[0] === x && to[1] === y) {
             break
         }
     }
-    for (let i = 1; kingLocation[0] + i < 8; i++) { // >^ bishop + queen
-        if (kingLocation[1] - i === -1) {
-            break
-        }
-        let square = getSquare(kingLocation[0] + i, kingLocation[1] - i);
+    for (let x = kingLocation[0] + 1, y = kingLocation[1] - 1; x < 8 && y > -1; x++, y--) { // >^ bishop + queen
+        let square = getSquare(x, y);
         if (square === `${notColour}q` ||
             square === `${notColour}b`) {
             return true
         }
-        if (square[0] === colour && from[0] !== kingLocation[0] + i && from[1] !== kingLocation[1] - i) {
+        if (square && !(from[0] === x && from[1] === y)) {
             break
         }
-        if (to[0] === kingLocation[0] + i && to[1] === kingLocation[1] - i) {
+        if (to[0] === x && to[1] === y) {
             break
         }
     }
-    for (let i = 1; kingLocation[0] - i > -1; i++) { // <\/ bishop + queen
-        if (kingLocation[1] + i === 8) {
-            break
-        }
-        let square = getSquare(kingLocation[0] - i, kingLocation[1] + i);
+    for (let x = kingLocation[0] - 1, y = kingLocation[1] + 1; x > -1 && y < 8; x--, y++) { // <\/ bishop + queen
+        let square = getSquare(x, y);
         if (square === `${notColour}q` ||
             square === `${notColour}b`) {
             return true
         }
-        if (square[0] === colour && from[0] !== kingLocation[0] - i && from[1] !== kingLocation[1] + i) {
+        if (square && !(from[0] === x && from[1] === y)) {
             break
         }
-        if (to[0] === kingLocation[0] - i && to[1] === kingLocation[1] + i) {
+        if (to[0] === x && to[1] === y) {
             break
         }
     }
@@ -601,7 +593,7 @@ function checkSquare(x, y, colour) {
 
 function getSquare(x, y) {
     if (x < 0 || x > 7 || y < 0 || y > 7) {
-        return "none"
+        return
     }
     return board.rows[y].cells[x].style.backgroundImage.slice(20, 22)
 }
