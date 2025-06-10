@@ -342,6 +342,9 @@ div.noWhitespace>span {
     margin-right: 4px;
     width: 25%;
 }
+.from {
+    background-color: green;
+}
 
 @media (max-width: 700px) {
     .chessWrapper {
