@@ -1,5 +1,16 @@
 const actualBoard = document.getElementById("board");
 
+const key = {
+    0: "a",
+    1: "b",
+    2: "c",
+    3: "d",
+    4: "e",
+    5: "f",
+    6: "g",
+    7: "h"
+};
+
 const board = [
     [false, false, false, false, false, false, false, false],
     [false, false, false, false, false, false, false, false],
@@ -175,17 +186,6 @@ function validateMove(fx, fy, tx, ty) {
         }
     }
 
-    const key = {
-        0: "a",
-        1: "b",
-        2: "c",
-        3: "d",
-        4: "e",
-        5: "f",
-        6: "g",
-        7: "h"
-    };
-
     let check = false;
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
@@ -206,10 +206,23 @@ function validateMove(fx, fy, tx, ty) {
         move += "+";
     }
 
+    // check for en passant and remove other pawn if applicable
+    if (
+        pieceMoved === "p" &&
+        Math.abs(tx - fx) === 1 &&
+        board[ty][tx] === false
+    ) {
+        if (currentColour === "w") {
+            board[3][tx] = false;
+        } else {
+            board[4][tx] = false;
+        }
+    }
+
     moves.push(move);
     board[fy][fx] = false;
     board[ty][tx] = `${currentColour}${pieceMoved}`;
-    boards.push(board);
+    boards.push(JSON.parse(JSON.stringify(board)));
 
     currentColour = currentColour === "w" ? "b" : "w";
 
@@ -234,22 +247,24 @@ function validateMove(fx, fy, tx, ty) {
 
 function pawnMove(fx, fy, tx, ty, colour) {
 
-    /*
-
-    E
-    N
-
-    P
-    A
-    S
-    S
-    A
-    N
-    T
-
-    */
-
     const direction = colour === "w" ? -1 : 1;
+
+    const opp = colour = "w" ? "b" : "w";
+
+    if (
+        Math.abs(tx - fx) === 1 &&
+        fy + direction === ty
+    ) {
+        if (
+            boards[boards.length - 2][ty + direction][tx] === `${opp}p` &&
+            !boards[boards.length - 2][ty][tx] &&
+            board[ty - direction][tx] === `${opp}p` &&
+            !board[ty + direction][tx] &&
+            board[ty][tx] === false
+        ) {
+            return true;
+        }
+    }
 
     // 2 squares
     if (
