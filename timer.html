@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./styles.css">
+        <title>stamellashroom1 | Timer</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <header>
+        <h1>Repeating Timer</h1>
+        <nav>
+            <ul>
+                <li><a href="./">Home</a></li>
+                <li><a href="./about.html">About</a></li>
+                <li><a href="./tools.html">Tools</a></li>
+                <li><a href="./render.html">3D</a></li>
+                <li><a href="./chess.html">Chess</a></li>
+            </ul>
+        </nav>
+    </header>
+    <body>
+        <div class="leftMargin rightMargin">
+            <h3 id="4">Length:</h3>
+            <input type="range" min="1" max="60" id="3" value="240">
+            <p id="1" style="font-size: 100px;"></p>
+            <audio id="2" src="beep.mp3"></audio>
+        </div>
+    </body>
+    <script>
+        const e = document.getElementById("4");
+        const d = document.getElementById("3");
+        let interval = d.value * 10;
+        const a = document.getElementById("1");
+        e.textContent = `Length: ${Math.floor(interval / 60)}:${interval % 60 < 10 ? "0" + String(interval % 60) : interval % 60}`;
+        d.addEventListener("input", () => {
+            interval = d.value * 10;
+            time = d.value * 10;
+            e.textContent = `Length: ${Math.floor(interval / 60)}:${interval % 60 < 10 ? "0" + String(interval % 60) : interval % 60}`;
+            a.textContent = `${Math.floor(interval / 60)}:${interval % 60 < 10 ? "0" + String(interval % 60) : interval % 60}`;
+        });
+        let time = interval;
+        a.textContent = `${Math.floor(interval / 60)}:${interval % 60 < 10 ? "0" + String(interval % 60) : interval % 60}`;
+        document.title = `Timer | ${Math.floor(interval / 60)}:${interval % 60 < 10 ? "0" + String(interval % 60) : interval % 60}`;
+        setInterval(() => {
+            time--;
+            if (time === 0) {
+                time = interval;
+                document.getElementById("2").play();
+            }
+            let b = Math.floor(time / 60);
+            let c = time % 60;
+            if (c < 10) {
+                c = "0" + String(c);
+            }
+            a.textContent = `${b}:${c}`;
+            document.title = `Timer | ${b}:${c}`;
+        }, 1000)
+    </script>
+</html>
