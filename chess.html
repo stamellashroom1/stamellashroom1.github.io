@@ -26,34 +26,48 @@
         </nav>
     </header>
         <div class="leftMargin rightMargin">
-            <h2>Chess</h2>
-            <p>"Pass and play" style chess. Pawn promotion and checkmate identification currently non-functional. Also, there's probably some edge cases that won't work properly.</p>
-            <div class="chessWrapper">
+            <span class="chessWrapper">
                 <div class="boardWrapper">
-                    <table id="board">
-                        <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
-                        <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
-                        <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
-                        <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
-                        <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
-                        <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
-                        <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
-                        <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
-                    </table>
-                </div>
-                <div class="chessSidebar">
-                    <div>
-                        <h3>Moves</h3>
-                        <table>
-                            <tr><th style="width: 25%;">Move No.</th><th>White</th><th>Black</th></tr>
+                    <div class="boardInnerWrapper">
+                        <table id="board">
+                            <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
+                            <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
+                            <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
+                            <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
+                            <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
+                            <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
+                            <tr><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td></tr>
+                            <tr><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td><td class="black"></td><td class="white"></td></tr>
                         </table>
                     </div>
-                    <br>
-                    <span><button>Back</button><button>Forwards</button></span>
-                    <br>
-                    <span><input placeholder="Input game code..." style="width: 50px;"><button>Join</button></span>
                 </div>
-            </div>
+                <div class="chessSidebar">
+                    <p style="margin-top: 0;">"Pass and play" style chess. Coming soon:</p>
+                    <ul>
+                        <li>Checkmate identification</li>
+                        <li>Pawn promotion</li>
+                        <li>Online games</li>
+                    </ul>
+                    <div id="moves">
+                        <h3>Moves</h3>
+                        <div id="tableWrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr><th style="width: 25%;">Move No.</th><th>White</th><th>Black</th></tr>
+                                </thead>
+                                <tbody id="moveTable"></tbody>
+                            </table>
+                            <div id="bottomBar"></div>
+                        </div>
+                    </div>
+                    <br>
+                    <div style="display: none;">
+                        <span><button>Back</button><button>Forwards</button></span>
+                        <br>
+                        <span><input placeholder="Input game code..." style="width: 50px;"><button>Join</button></span>
+                    </div>
+                </div>
+            </span>
         </div>
         <!--<script src="chess.js"></script>-->
         <script src="betterchess.js"></script>

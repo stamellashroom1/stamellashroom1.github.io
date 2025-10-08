@@ -1,4 +1,5 @@
 const actualBoard = document.getElementById("board");
+const moveTable = document.getElementById("moveTable");
 
 const key = {
     0: "a",
@@ -32,7 +33,9 @@ const newBoard = [
     [false, false, false, false, false, false, false, false],
     [false, false, false, false, false, false, false, false]
 ];
-
+/**
+ * current move
+ */
 let currentColour = "w";
 const moves = [];
 const boards = [];
@@ -41,7 +44,7 @@ const castlingRights = {
     w: {k: true, q: true}
 };
 
-const whiteStartPos = [
+const startPos = [
     ["br", "bn", "bb", "bq", "bk", "bb", "bn", "br"],
     ["bp", "bp", "bp", "bp", "bp", "bp", "bp", "bp"],
     [false, false, false, false, false, false, false, false],
@@ -52,6 +55,9 @@ const whiteStartPos = [
     ["wr", "wn", "wb", "wq", "wk", "wb", "wn", "wr"]
 ];
 
+/**
+ * not dependent on colour: server side
+ */
 function loadPosition(position) {
     moves.length = 0;
     boards.length = 0;
@@ -63,14 +69,20 @@ function loadPosition(position) {
     }
 }
 
-function updateBoard() {
+/**
+ * dependent on colour: client side
+ */
+function updateBoard(colour) {
+    let a = colour === "w" ? -1 : 1; // inversion for black
+    let b = colour === "w" ? 0 : 7;
+
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             if (board[y][x]) {
-                actualBoard.rows[y].cells[x].style.backgroundImage =
+                actualBoard.rows[a*(b-y)].cells[a*(b-x)].style.backgroundImage =
                 `url("./chess_pieces/${board[y][x]}.png")`;
             } else {
-                actualBoard.rows[y].cells[x].style.backgroundImage = "none";
+                actualBoard.rows[a*(b-y)].cells[a*(b-x)].style.backgroundImage = "none";
             }
         }
     }
@@ -101,19 +113,26 @@ cells.forEach(cell => {
     })
 })
 
-loadPosition(whiteStartPos)
-updateBoard()
+loadPosition(startPos)
+updateBoard(currentColour)
 
 function attemptMove() {
     let fx, fy, tx, ty;
+    let a = currentColour === "w" ? -1 : 1; // reinvert board from client to server
+    let b = currentColour === "w" ? 0 : 7;
+
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             if (actualBoard.rows[y].cells[x].classList.contains("to")) {
-                tx = x;
-                ty = y;
+                tx = a*(b-x);
+                ty = a*(b-y);
+
+                // console.log("to", currentColour, tx, ty, x, y)
             } else if (actualBoard.rows[y].cells[x].classList.contains("from")) {
-                fx = x;
-                fy = y;
+                fx = a*(b-x);
+                fy = a*(b-y);
+
+                // console.log("from", currentColour, fx, fy, x, y)
             }
         }
     }
@@ -202,6 +221,14 @@ function validateMove(fx, fy, tx, ty) {
     move += key[tx]
     move += 8 - ty;
 
+    if (pieceMoved === "k" && Math.abs(tx - fx) === 2) {
+        if (tx - fx < 0) {
+            move = "O-O-O";
+        } else {
+            move = "O-O"
+        }
+    }
+
     if (check) {
         move += "+";
     }
@@ -224,24 +251,46 @@ function validateMove(fx, fy, tx, ty) {
     board[ty][tx] = `${currentColour}${pieceMoved}`;
     boards.push(JSON.parse(JSON.stringify(board)));
 
+    if (currentColour === "w") {
+        let row = moveTable.insertRow();
+        let c1 = row.insertCell()
+        c1.innerHTML = `${Math.ceil(moves.length / 2)}.`;
+        let c2 = row.insertCell()
+        c2.innerHTML = `${move}`;
+        let c3 = row.insertCell()
+        if (moves.length === 1) {
+            c1.style.borderTop = 0;
+            c2.style.borderTop = 0;
+            c3.style.borderTop = 0;
+            document.getElementById("moves").style.display = "block";
+        }
+    } else {
+        let row = moveTable.rows[moveTable.rows.length - 1];
+        row.cells[2].innerHTML = `${move}`;
+    }
+
     currentColour = currentColour === "w" ? "b" : "w";
 
     // disable castling if applicable
-    if ((fx === 0 && fy === 0) || (tx === 0 && ty === 0)
+    if (
+        (fx === 0 && fy === 0) || (tx === 0 && ty === 0)
     ) {
         castlingRights.b.q = false;
-    } else if ((fx === 7 && fy === 0) || (tx === 7 && ty === 0)
+    } else if (
+        (fx === 7 && fy === 0) || (tx === 7 && ty === 0)
     ) {
         castlingRights.b.k = false;
-    } else if ((fx === 0 && fy === 7) || (tx === 0 && ty === 7)
+    } else if (
+        (fx === 0 && fy === 7) || (tx === 0 && ty === 7)
     ) {
         castlingRights.w.q = false;
-    } else if ((fx === 7 && fy === 7) || (tx === 7 && ty === 7)
+    } else if (
+        (fx === 7 && fy === 7) || (tx === 7 && ty === 7)
     ) {
         castlingRights.w.k = false;
     }
 
-    updateBoard()
+    updateBoard(currentColour)
     return true;
 }
 
@@ -420,7 +469,7 @@ function kingMove(fx, fy, tx, ty, colour) {
             return true;
         } else if (
             castlingRights.b.q &&
-            tx === 6 &&
+            tx === 2 &&
             ty === 0 &&
             !inCheck(4, 0, currentColour) &&
             !inCheck(3, 0, currentColour) &&
