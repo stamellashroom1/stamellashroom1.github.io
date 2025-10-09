@@ -290,24 +290,26 @@ function validateMove(fx, fy, tx, ty) {
 
     updateBoard(currentColour)
 
-    let boardWrapper = document.getElementsByClassName("boardInnerWrapper")[0];
-    boardWrapper.classList.add("rotate")
-    cells.forEach((cell) => {
-        cell.style.setProperty("--pseudoRotate", "cellRotate 1s linear forwards")
-    })
-
     setTimeout(() => {
-        currentColour = currentColour === "w" ? "b" : "w";
-
-        updateBoard(currentColour)
-
-        boardWrapper.classList.remove("rotate")
-        boardWrapper.style.transform = "rotate(0deg)";
+        let boardWrapper = document.getElementsByClassName("boardInnerWrapper")[0];
+        boardWrapper.classList.add("rotate")
         cells.forEach((cell) => {
-            cell.style.setProperty("--pseudoRotate", "none")
-            cell.style.setProperty("--rotate", "rotate(0deg)")
+            cell.style.setProperty("--pseudoRotate", "cellRotate 1s linear forwards")
         })
-    }, 1000)
+
+        setTimeout(() => {
+            currentColour = currentColour === "w" ? "b" : "w";
+
+            updateBoard(currentColour)
+
+            boardWrapper.classList.remove("rotate")
+            boardWrapper.style.transform = "rotate(0deg)";
+            cells.forEach((cell) => {
+                cell.style.setProperty("--pseudoRotate", "none")
+                cell.style.setProperty("--rotate", "rotate(0deg)")
+            })
+        }, 1000)
+    }, 500)
 
     return true;
 }
