@@ -569,13 +569,18 @@ function inCheck(x, y, colour) {
             lx += directions[l][0], ly += directions[l][1]
         ) {
             let loc = square(lx, ly);
-            if (loc[0] === colour) {
+            if (!loc) {
                 break;
             }
-            if (loc[1] === directions[l][2] ||
-                loc[1] === "q"
-            ) {
-                return true;
+            if (loc[0] === colour) {
+                break;
+            } else {
+                if (loc[1] === directions[l][2] ||
+                    loc[1] === "q"
+                ) {
+                    return true;
+                }
+                break;
             }
         }
     }
