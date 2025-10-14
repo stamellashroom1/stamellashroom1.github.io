@@ -318,7 +318,7 @@ function pawnMove(fx, fy, tx, ty, colour) {
 
     const direction = colour === "w" ? -1 : 1;
 
-    const opp = colour = "w" ? "b" : "w";
+    const opp = colour === "w" ? "b" : "w";
 
     if (
         Math.abs(tx - fx) === 1 &&
@@ -570,17 +570,17 @@ function inCheck(x, y, colour) {
         ) {
             let loc = square(lx, ly);
             if (!loc) {
+                continue;
+            } else if (
+                loc === "OoR" ||
+                loc[0] === colour
+            ) {
                 break;
-            }
-            if (loc[0] === colour) {
-                break;
-            } else {
-                if (loc[1] === directions[l][2] ||
-                    loc[1] === "q"
-                ) {
-                    return true;
-                }
-                break;
+            } else if (
+                loc[1] === directions[l][2] ||
+                loc[1] === "q"
+            ) {
+                return true;
             }
         }
     }
@@ -590,7 +590,7 @@ function inCheck(x, y, colour) {
 
 function square(x, y) {
     if (x < 0 || x > 7 || y < 0 || y > 7) {
-        return false;
+        return "OoR"; // Out of Range
     }
     return newBoard[y][x];
 }
