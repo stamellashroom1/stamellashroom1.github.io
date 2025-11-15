@@ -49,7 +49,7 @@ function init() {
         ws.close(1000, "close");
         ws = null;
     }
-    ws = new WebSocket("ws://127.0.0.1:3000");
+    ws = new WebSocket("ws://render-app-1-let5.onrender.com");
 
     ws.onmessage = function onMessage(event) {
         const text = event.data;
