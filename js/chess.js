@@ -8,7 +8,7 @@ const board = document.getElementById("board");
 
 function setSquare(x, y, type) {
     if (type) {
-        board.rows[y].cells[x].style.backgroundImage = `url("./chess_pieces/${type}.png")`;
+        board.rows[y].cells[x].style.backgroundImage = `url("/chess_pieces/${type}.png")`;
         // console.log(`x: ${x}, y: ${y}, type: ${type}`)
     } else {
         board.rows[y].cells[x].style.backgroundImage = "none";
@@ -55,7 +55,7 @@ const cells = document.querySelectorAll("#board td");
 let cellHighlighted = false;
 cells.forEach(cell => {
     cell.addEventListener("click", () => {
-        if (cell.style.backgroundImage[20] == colour[0]) {
+        if (cell.style.backgroundImage[19] == colour[0]) {
             let highlight = cell.classList.contains("highlight");
             cells.forEach(cell => {
                 cell.classList.remove("highlight");
@@ -81,7 +81,7 @@ const highlightObserver = new MutationObserver((mutations) => {
     mutations.forEach(mutation => {
         if (mutation.attributeName === "class") {
             if (mutation.target.classList.contains("highlight")) {
-                if (mutation.target.style.backgroundImage[20] === "w") {
+                if (mutation.target.style.backgroundImage[19] === "w") {
                     mutation.target.style.backgroundColor = "lightgreen";
                 } else {
                     mutation.target.style.backgroundColor = "lightgreen"
@@ -113,11 +113,11 @@ function attemptMove() {
             const cell = board.rows[y].cells[x];
             if (cell.classList.contains("highlight")) {
                 from = [x, y];
-                piece = cell.style.backgroundImage[21];
+                piece = cell.style.backgroundImage[20];
             } else if (cell.classList.contains("move")) {
                 to = [x, y];
                 if (cell.style.backgroundImage !== "none") {
-                    takes = cell.style.backgroundImage[21];
+                    takes = cell.style.backgroundImage[20];
                 } else {
                     takes = "none";
                 }
@@ -393,7 +393,7 @@ function attemptMove() {
     }
 
     board.rows[from[1]].cells[from[0]].style.backgroundImage = "none";
-    board.rows[to[1]].cells[to[0]].style.backgroundImage = `url("./chess_pieces/${colour}${piece}.png")`;
+    board.rows[to[1]].cells[to[0]].style.backgroundImage = `url("/chess_pieces/${colour}${piece}.png")`;
     moves.push({
         "from": from,
         "to": to,
@@ -421,7 +421,7 @@ function checkTest(kx, ky) {
     } else {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                if (board.rows[i].cells[j].style.backgroundImage.slice(20, 22) === colour + "k") {
+                if (board.rows[i].cells[j].style.backgroundImage.slice(19, 21) === colour + "k") {
                     kingLocation[0] = j;
                     kingLocation[1] = i;
                 }
@@ -595,5 +595,5 @@ function getSquare(x, y) {
     if (x < 0 || x > 7 || y < 0 || y > 7) {
         return
     }
-    return board.rows[y].cells[x].style.backgroundImage.slice(20, 22)
+    return board.rows[y].cells[x].style.backgroundImage.slice(19, 21)
 }

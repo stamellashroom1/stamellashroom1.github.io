@@ -80,7 +80,7 @@ function updateBoard(colour) {
         for (let x = 0; x < 8; x++) {
             if (board[y][x]) {
                 actualBoard.rows[a*(b-y)].cells[a*(b-x)].style.backgroundImage =
-                `url("./chess_pieces/${board[y][x]}.png")`;
+                `url("/chess_pieces/${board[y][x]}.png")`;
             } else {
                 actualBoard.rows[a*(b-y)].cells[a*(b-x)].style.backgroundImage = "none";
             }
@@ -92,7 +92,8 @@ const cells = document.querySelectorAll("#board td");
 let cellHighlighted = false;
 cells.forEach(cell => {
     cell.addEventListener("click", () => {
-        if (cell.style.backgroundImage[20] === currentColour[0]) {
+        console.log("check");
+        if (cell.style.backgroundImage[19] === currentColour[0]) {
             let from = cell.classList.contains("from");
             cells.forEach(cell => {
                 cell.classList.remove("from");

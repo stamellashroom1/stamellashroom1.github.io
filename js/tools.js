@@ -1,9 +1,11 @@
+const dpr = window.devicePixelRatio || 1;
+
 // General Calculator
 (function () {
     const submit = document.getElementById("generalCalculatorSubmit");
     const answer = document.getElementById("ans-1");
     const copy = document.getElementById("copyCalc");
-    const ANS = document.getElementById("calcANS");
+    const ANS = document.getElementById("ans-1");
     copy.style.display = "none";
     ANS.style.display = "none";
     answer.textContent = "";
@@ -407,18 +409,36 @@ function solveDiff() {
     if (input) {
         if (input.includes("x")) {
             input = input.replaceAll("--", "+");
+            input = input.replaceAll(/(?<=\d|x)-/g, "+-");
             if (input[0] === "+") {
                 input = input.substring(1);
             }
             input = input.replaceAll(/(?<!\d)x/g, "1x");
 
             simplify(input);
-            let allValues = input.match(/-?\d*\.?\d*x\^-?\d*\.?\d*|-?\d*\.?\d+x|-?\d*\.?\d*\^-?\d+\.?\d*|-?\d+\.?\d*/g);
+            // let allValues = input.match(/-?\d*\.?\d*x\^-?\d*\.?\d*|-?\d*\.?\d+x|-?\d*\.?\d*\^-?\d+\.?\d*|-?\d+\.?\d*/g);
             // +-number x ^ +-number | +-number x | +-number ^ +-number | +-number
 
-            let signs = input.match(/\+/g);
+            input = input + "+";
+            let allValues = [];
+            let currentTerm = "";
+            let bracketsCounter = 0;
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] === "+" && bracketsCounter === 0) {
+                    allValues.push(currentTerm);
+                    currentTerm = "";
+                } else {
+                    if (input[i] === "(") {
+                        bracketsCounter++;
+                    } else if (input[i] === ")") {
+                        bracketsCounter--;
+                    }
+                    currentTerm += input[i];
+                }
+            }
+
             if (allValues !== null) {
-                if (signs == null) {
+                if (allValues.length === 1) {
                     diffSolution = diff(allValues[0]);
                     diffSolution = cleanInput(diffSolution);
                     diffAnswer.style.display = "inline-block";
@@ -589,6 +609,7 @@ function simplify(input) {
     }
     return final;
 }
+
 
 // Modal
 const modal = document.getElementById("testModal");
