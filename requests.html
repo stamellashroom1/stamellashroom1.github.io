@@ -2,7 +2,7 @@
 <html>
     <head>
         <link rel="stylesheet" href="./styles.css">
-        <title>stamellashroom1 | Home</title>
+        <title>stamellashroom1 | Requests</title>
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -32,11 +32,31 @@
                 <button id="getDate">Get date</button>
                 <p id="date"></p>
             </div>
-            <div style="width: 40vw; min-width: 300px">
-                <h3>Messaging (disabled by default)</h3>
-                <div id="messages"></div>
-                <input type="text" id="messageInput" autofocus>
-                <button id="sendMessage">Send</button>
+            <div style="width: 100%;">
+                <h3>Messaging (disabled serverside by default)</h3>
+                <div class="flexMessaging">
+                    <div class="flexMessagingChild">
+                        <div id="messages" style="overflow-y: auto;height: 300px;border: 2px solid #aaa;border-radius: 5px;padding: 5px;"></div>
+                        <input type="text" id="messageInput" autofocus>
+                        <button id="sendMessage">Send</button>
+                    </div>
+                    <div class="flexMessagingChild">
+                        <h4 style="margin-top: 0;">Custom CSS</h4>
+                        <p>Use "\(inline CSS)|" to apply any CSS to the following text, \rm:(CSS tag)| to remove specific elements, and \clear| to remove all. Can currently be used anywhere... Custom shortcuts:</p>
+                        <ul>
+                            <li>b = bold</li>
+                            <li>i = italic</li>
+                            <li>u = underline</li>
+                            <li>c = inline code</li>
+                        </ul>
+                        <p>For example:</p>
+                        <p style="font-family: monospace; background: #f3f3f3; padding: 2px 4px; border-radius: 3px;">\b;color:red|Red and bold, \rm:color|\c|now bold code,\clear|\u| underline,\clear| and nothing.</p>
+                        <span style="color:red; font-weight: bold;">Red and bold, </span>
+                        <span style="font-weight: bold; font-family: monospace; background: #f3f3f3; padding: 2px 4px; border-radius: 3px;">now bold code,</span>
+                        <span style="text-decoration: underline;"> underline,</span>
+                        <span> and nothing.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
